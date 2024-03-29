@@ -1,5 +1,6 @@
 from flask import Flask 
-import sqlite3 
+import sqlite3
+from flask import request
 
 app = Flask(__name__)
 
@@ -58,65 +59,40 @@ def add_content():
 def return_content():
     pass 
 
-#function to search by title 
-def search_by_title():
-    pass 
-
-#function to search by modified date
-def search_by_modified_date():
-    pass 
-
-#function to search by created date
-def search_by_created_date():
+#function to search by title
+@app.route('/search', methods=['GET'])
+def search():
+    # requests must have the application/json content type
+    payload = request.json # json dict
+    search_field = payload['search_field'] #string
+    query = payload['query']
+    return_fields = payload['return_fields']
+    assert search_field in set(['modified_date', 'title', 'created_date', 'tag'])
     pass
-
-#function to search by tag
-def search_by_tag(): 
-    pass
-
-
 
 ###LISTING FUNCTIONS
-
-def list_by_title():
+@app.route('/list', methods=['GET'])
+def list():
+    # requests must have the application/json content type
+    payload = request.json # json dict
+    list_field = payload['list_field']
+    assert list_field in set(['modified_date', 'title', 'created_date'])
+    # handle the fact that title is always returned
+    if list_field is 'title':
+        list_field = ','
+    else:
+        list_field = ", notes." + list_field
+    sql_query = f"""
+                   SELECT notes.title{list_field}
+                   FROM notes
+                   """
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
-    cursor.execute(f"""
-                   SELECT notes.title
-                   FROM notes
-                   """)
+    cursor.execute(sql_query)
     
-    titles = cursor.fetchall()
-    for value in titles: 
-        print(value)
+    fetch = cursor.fetchall()
     conn.close()
-    return titles 
-
-def list_by_modified_date():
-    conn = sqlite3.connect("note.db")
-    cursor = conn.cursor()
-    cursor.execute(f"""
-                   SELECT notes.title, notes.modified_date
-                   FROM notes
-                   """)
-    
-    modified_date = cursor.fetchall()
-    conn.close()
-    return modified_date 
-
-
-
-def list_by_created_date():
-    conn = sqlite3.connect("note.db")
-    cursor = conn.cursor()
-    cursor.execute(f"""
-                   SELECT notes.title, notes.created_date
-                   FROM notes
-                   """)
-    
-    created_date = cursor.fetchall()
-    conn.close()
-    return created_date 
+    return fetch  
 
 def list_tags():
     conn = sqlite3.connect("note.db")
