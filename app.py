@@ -1,7 +1,7 @@
 from flask import Flask 
 import sqlite3
 from flask import request, abort
-from datetime import date
+from datetime import date, date, timedelta
 
 app = Flask(__name__)
 
@@ -139,24 +139,34 @@ def search():
     # let us rid ourselves of that pesky comma, shall we?
     select_fields_string = select_fields_string[:-1]
 
-    # modified_date
+    # modified_date looks like 'YYYY-MM-DD'
     if search_field == 'modified_date':
+        # beginning of day
+        start = datetime.strptime(query, '%Y/%m/%d')
+        # end of day
+        end = start + timedelta(days=1)
+        # into decimals then strings
+        start = str(start.timestamp())
+        end = str(end.timestamp())
         sql_query = f"""
                    SELECT {select_fields_string}
                    FROM notes
+                   WHERE notes.modified_date > {start} AND notes.modified_date < {end}
                    """
     # title
     if search_field == 'title':
         sql_query = f"""
                    SELECT {select_fields_string}
                    FROM notes
+                   WHERE notes.title = {query}
                    """
-    # created_date
+    # created_date looks like 'YYYY-MM-DD'
     if search_field == 'created_date':
         sql_query = f"""
                    SELECT {select_fields_string}
                    FROM notes
                    """
+    datetime.strptime('31/01/22 23:59:59.999999','%d/%m/%y %H:%M:%S.%f')
     # tag (super hard ?)
     if search_field == 'tag':
         sql_query = f"""
