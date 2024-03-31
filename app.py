@@ -65,16 +65,22 @@ def search():
     # requests must have the application/json content type
     payload = request.json # json dict
     search_field = payload['search_field'] #string
-    query = payload['query']
+    query = payload['query'] #string
     return_fields = payload['return_fields']
     assert search_field in set(['modified_date', 'title', 'created_date', 'tag'])
-    pass
+    
+    if search_field == 'title':
+        pass
 
 ###LISTING FUNCTIONS
 @app.route('/list', methods=['GET'])
 def list():
     # requests must have the application/json content type
     payload = request.json # json dict
+
+    # {"list_field": "modified_date"}
+    # 
+    # 
     list_field = payload['list_field']
     assert list_field in set(['modified_date', 'title', 'created_date'])
     # handle the fact that title is always returned
