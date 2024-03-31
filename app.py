@@ -142,7 +142,7 @@ def search():
     # modified_date looks like 'YYYY-MM-DD'
     if search_field == 'modified_date':
         # beginning of day
-        start = datetime.strptime(query, '%Y/%m/%d')
+        start = datetime.strptime(query, '%Y-%m-%d')
         # end of day
         end = start + timedelta(days=1)
         # into decimals then strings
@@ -166,7 +166,6 @@ def search():
                    SELECT {select_fields_string}
                    FROM notes
                    """
-    datetime.strptime('31/01/22 23:59:59.999999','%d/%m/%y %H:%M:%S.%f')
     # tag (super hard ?)
     if search_field == 'tag':
         sql_query = f"""
