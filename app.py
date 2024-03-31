@@ -1,5 +1,7 @@
 from flask import Flask 
-import sqlite3 
+import sqlite3
+from flask import request, abort
+from datetime import date
 
 app = Flask(__name__)
 
@@ -28,96 +30,122 @@ init_db()
 
 ###CREATION AND DELETION FUNCTIONS
 
-#Function to create a note
-def create_note(): 
-    pass 
+#Used to create notes and create tags
+@app.route('/create', methods=['POST'])
+def create(): 
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    payload = request.json
+    try: 
+        title = payload.get('title')
+    except KeyError:
+        abort(206, "Data Entry Requires A Title")
+    
+    try: 
+        content = payload.get('content')
+    except KeyError: 
+        content = ""
+    
+    try: 
+        tags = payload.get('tag')
+    except KeyError: 
+        tags = ""
+    
+    if tags != "":
+        for value in tags: 
+            cursor.execute("INSERT INTO tags VALUES (?,?)", (title, value))
+    
+    else: 
+        cursor.execute("INSERT INTO notes VALUES (?,?,?,?)", (title,content,date.today(),date.today()))
 
-#function to delete a note
-def delete_note():
-    pass
+    conn.close()
+        
+     
+#used to delete notes and delete tags
+@app.route('/delete', methods=['POST'])
+def delete():
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    payload = request.json
+    try: 
+        title = payload.get('title')
+    except KeyError:
+        abort(206, "Data Entry Requires A Title")
+    
+    try: 
+        tags = payload.get('tag')
+    except KeyError: 
+        tags = ""
+        
+    if tags != "": 
+        for tag in tags: 
+            cursor.execute(f"DELETE FROM tags WHERE title == {title} AND tag == {tag}")
+    else: 
+        cursor.execute(f"DELETE FROM notes WHERE title == {title}")
+    
+    conn.close()
 
-#function to create a tag
-def create_tag(): 
-    pass
-
-#function to delete a tag
-def delete_tag():
-    pass 
-
-#function to add content
-#I do not know if we need a separate function for edit content. I can explain the reasoning in class 
-def add_content(): 
-    pass 
+#used to update note content
+@app.route('/update', methods=['POST'])
+def update(): 
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    payload = request.json
+    
+    try: 
+        title = payload.get('title')
+    except KeyError:
+        abort(206, "Data Entry Requires A Title")
+        
+    try: 
+        content = payload.get('content')
+    except KeyError: 
+        abort(206, "Date Entry Requires Content")
+        
+    
+    cursor.execute(f"UPDATE notes SET content = {content}, modified_date = {date.today()} WHERE title = {title}")
+    conn.commit()
+    conn.close()
+    
 
 
 ###SEARCHING FUNCTIONS
 
-#This will be called by the frontend for two different functions
-    #1) Viewing Content 
-    #2) PDF Conversion 
-def return_content():
-    pass 
-
-#function to search by title 
-def search_by_title():
-    pass 
-
-#function to search by modified date
-def search_by_modified_date():
-    pass 
-
-#function to search by created date
-def search_by_created_date():
+#function for all search methods - modified date, tag, created date, etc.
+#This function will also likely be used to return content which can be used for both 
+#viewing content and PDF conversion
+@app.route('/search', methods=['GET'])
+def search():
+    # requests must have the application/json content type
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    payload = request.json # json dict
+    search_field = payload.get('search_field') #string
+    query = payload.get('query')
+    return_fields = payload.get('return_fields')
+    assert search_field in set(['modified_date', 'title', 'created_date', 'tag'])
     pass
-
-#function to search by tag
-def search_by_tag(): 
-    pass
-
-
 
 ###LISTING FUNCTIONS
-
-def list_by_title():
+@app.route('/list', methods=['GET'])
+def list():
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
-    cursor.execute(f"""
-                   SELECT notes.title
+    # requests must have the application/json content type
+    payload = request.json # json dict
+    list_field = payload['list_field']
+    assert list_field in set(['modified_date', 'title', 'created_date'])
+    # handle the fact that title is always returned
+    if list_field == 'title':
+        list_field = ','
+    else:
+        list_field = ", notes." + list_field
+    sql_query = f"""
+                   SELECT notes.title{list_field}
                    FROM notes
-                   """)
+                   """
+    cursor.execute(sql_query)
     
-    titles = cursor.fetchall()
-    for value in titles: 
-        print(value)
+    fetch = cursor.fetchall()
     conn.close()
-    return titles 
-
-def list_by_modified_date():
-    conn = sqlite3.connect("note.db")
-    cursor = conn.cursor()
-    cursor.execute(f"""
-                   SELECT notes.title, notes.modified_date
-                   FROM notes
-                   """)
-    
-    modified_date = cursor.fetchall()
-    conn.close()
-    return modified_date 
-
-
-
-def list_by_created_date():
-    conn = sqlite3.connect("note.db")
-    cursor = conn.cursor()
-    cursor.execute(f"""
-                   SELECT notes.title, notes.created_date
-                   FROM notes
-                   """)
-    
-    created_date = cursor.fetchall()
-    conn.close()
-    return created_date 
-
-def list_tags():
-    conn = sqlite3.connect("note.db")
-    cursor = conn.cursor()
+    return fetch  
