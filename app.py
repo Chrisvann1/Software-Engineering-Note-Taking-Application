@@ -162,15 +162,27 @@ def search():
                    """
     # created_date looks like 'YYYY-MM-DD'
     if search_field == 'created_date':
+        # beginning of day
+        start = datetime.strptime(query, '%Y-%m-%d')
+        # end of day
+        end = start + timedelta(days=1)
+        # into decimals then strings
+        start = str(start.timestamp())
+        end = str(end.timestamp())
         sql_query = f"""
                    SELECT {select_fields_string}
                    FROM notes
+                   WHERE notes.created_date > {start} AND notes.created_date < {end}
                    """
     # tag (super hard ?)
     if search_field == 'tag':
+        # gets the notes objects that match the tag search
         sql_query = f"""
-                   SELECT notes.title{list_field}
+                   SELECT {search_fields_string}
                    FROM notes
+                   INNER JOIN tags AS tg
+                   ON notes.title = tg.title
+                   WHERE tg.tag = {query}
                    """
     cursor.execute(sql_query)
     fetch = cursor.fetchall()
