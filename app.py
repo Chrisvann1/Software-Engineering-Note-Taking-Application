@@ -124,7 +124,35 @@ def search():
     query = payload.get('query')
     return_fields = payload.get('return_fields')
     assert search_field in set(['modified_date', 'title', 'created_date', 'tag'])
-    pass
+    
+    # modified_date
+    if search_field == 'modified_date':
+        sql_query = f"""
+                   SELECT notes.title{list_field}
+                   FROM notes
+                   """
+    # title
+    if search_field == 'title':
+        sql_query = f"""
+                   SELECT notes.title{list_field}
+                   FROM notes
+                   """
+    # created_date
+    if search_field == 'created_date':
+        sql_query = f"""
+                   SELECT notes.title{list_field}
+                   FROM notes
+                   """
+    # tag (super hard ?)
+    if search_field == 'tag':
+        sql_query = f"""
+                   SELECT notes.title{list_field}
+                   FROM notes
+                   """
+    cursor.execute(sql_query)
+    fetch = cursor.fetchall()
+    conn.close()
+    return fetch
 
 ###LISTING FUNCTIONS
 @app.route('/list', methods=['GET'])
@@ -137,6 +165,7 @@ def list():
     list_field = payload['list_field']
     assert list_field in set(['modified_date', 'title', 'created_date'])
     # handle the fact that title is always returned
+    # and you will NOT be SQL injecting this shit
     if list_field == 'title':
         list_field = ','
     else:
