@@ -117,30 +117,44 @@ def update():
 @app.route('/search', methods=['GET'])
 def search():
     # requests must have the application/json content type
+    # open connection, get the requests passed
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
     payload = request.json # json dict
     search_field = payload.get('search_field') #string
     query = payload.get('query')
     return_fields = payload.get('return_fields')
+
+    # field safety
     assert search_field in set(['modified_date', 'title', 'created_date', 'tag'])
+    for field in return_fields:
+        assert field in set(['modified_date', 'title', 'created_date', 'tag'])
     
+    # we will always return title
+    if "title" not in return_fields:
+        # prepend
+        return_fields.insert(0, "title")
+    # pre-prepare the SELECT fields
+    select_fields_string = "".join(['notes.' + field + ',' for field in return_fields])
+    # let us rid ourselves of that pesky comma, shall we?
+    select_fields_string = select_fields_string[:-1]
+
     # modified_date
     if search_field == 'modified_date':
         sql_query = f"""
-                   SELECT notes.title{list_field}
+                   SELECT {select_fields_string}
                    FROM notes
                    """
     # title
     if search_field == 'title':
         sql_query = f"""
-                   SELECT notes.title{list_field}
+                   SELECT {select_fields_string}
                    FROM notes
                    """
     # created_date
     if search_field == 'created_date':
         sql_query = f"""
-                   SELECT notes.title{list_field}
+                   SELECT {select_fields_string}
                    FROM notes
                    """
     # tag (super hard ?)
