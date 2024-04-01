@@ -51,18 +51,31 @@ def create():
     except KeyError: 
         tags = ""
     
+    cursor.execute("INSERT INTO notes VALUES (?,?,?,?)", (title,content,date.today(),date.today()))
     if tags != "":
         for value in tags: 
             cursor.execute("INSERT INTO tags VALUES (?,?)", (title, value))
-    
-    else: 
-        cursor.execute("INSERT INTO notes VALUES (?,?,?,?)", (title,content,date.today(),date.today()))
 
     conn.close()
         
      
 #used to delete notes and delete tags
-@app.route('/delete', methods=['POST'])
+@app.route('/delete/note', methods=['POST'])
+def delete():
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    payload = request.json
+    try: 
+        title = payload.get('title')
+    except KeyError:
+        abort(206, "Data Entry Requires A Title")
+
+    cursor.execute(f"DELETE FROM tags WHERE title == {title}")
+    cursor.execute(f"DELETE FROM notes WHERE title == {title}")
+    conn.commit()   
+    conn.close()
+
+@app.route('/delete/tag', methods=['POST'])
 def delete():
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
@@ -75,14 +88,11 @@ def delete():
     try: 
         tags = payload.get('tag')
     except KeyError: 
-        tags = ""
+        abort(206, "Data Entry Requires A Tag")
         
-    if tags != "": 
-        for tag in tags: 
-            cursor.execute(f"DELETE FROM tags WHERE title == {title} AND tag == {tag}")
-    else: 
-        cursor.execute(f"DELETE FROM notes WHERE title == {title}")
-    
+    for tag in tags: 
+        cursor.execute(f"DELETE FROM tags WHERE title == {title} AND tag == {tag}")
+    conn.commit()    
     conn.close()
 
 #used to update note content
@@ -100,9 +110,8 @@ def update():
     try: 
         content = payload.get('content')
     except KeyError: 
-        abort(206, "Date Entry Requires Content")
+        abort(206, "Data Entry Requires Content")
         
-    
     cursor.execute(f"UPDATE notes SET content = {content}, modified_date = {date.today()} WHERE title = {title}")
     conn.commit()
     conn.close()
