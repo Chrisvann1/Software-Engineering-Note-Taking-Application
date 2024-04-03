@@ -31,8 +31,8 @@ init_db()
 ###CREATION AND DELETION FUNCTIONS
 
 #Used to create notes and create tags
-@app.route('/create', methods=['POST'])
-def create(): 
+@app.route('/notes', methods=['POST'])
+def create_note(): 
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
     payload = request.json
@@ -46,22 +46,31 @@ def create():
     except KeyError: 
         content = ""
     
-    try: 
-        tags = payload.get('tag')
-    except KeyError: 
-        tags = ""
-    
     cursor.execute("INSERT INTO notes VALUES (?,?,?,?)", (title,content,date.today(),date.today()))
-    if tags != "":
-        for value in tags: 
-            cursor.execute("INSERT INTO tags VALUES (?,?)", (title, value))
 
     conn.close()
         
-     
+@app.route('/tags', methods=['POST'])
+def create_tag(): 
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    payload = request.json
+    try: 
+        title = payload.get('title')
+    except KeyError:
+        abort(206, "Data Entry Requires A Title")
+
+    try: 
+        tags = payload.get('tag')
+    except KeyError: 
+        abort(206, "Data Entry Requires a tag")
+        
+    for value in tags: 
+        cursor.execute("INSERT INTO tags VALUES (?,?)", (title, value))
+
 #used to delete notes and delete tags
-@app.route('/delete/note', methods=['POST'])
-def delete():
+@app.route('/notes', methods=['DELETE'])
+def delete_note():
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
     payload = request.json
@@ -75,8 +84,8 @@ def delete():
     conn.commit()   
     conn.close()
 
-@app.route('/delete/tag', methods=['POST'])
-def delete():
+@app.route('/tags', methods=['DELETE'])
+def delete_tag():
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
     payload = request.json
@@ -96,8 +105,8 @@ def delete():
     conn.close()
 
 #used to update note content
-@app.route('/update', methods=['POST'])
-def update(): 
+@app.route('/notes', methods=['PUT'])
+def update_note(): 
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
     payload = request.json
@@ -123,8 +132,8 @@ def update():
 #function for all search methods - modified date, tag, created date, etc.
 #This function will also likely be used to return content which can be used for both 
 #viewing content and PDF conversion
-@app.route('/search', methods=['GET'])
-def search():
+@app.route('/notes/search', methods=['GET'])
+def search_notes():
     # requests must have the application/json content type
     # open connection, get the requests passed
     conn = sqlite3.connect("note.db")
@@ -187,7 +196,7 @@ def search():
     if search_field == 'tag':
         # gets the notes objects that match the tag search
         sql_query = f"""
-                   SELECT {search_fields_string}
+                   SELECT {select_fields_string}
                    FROM notes
                    INNER JOIN tags AS tg
                    ON notes.title = tg.title
@@ -198,8 +207,9 @@ def search():
     conn.close()
     return fetch
 
+
 ###LISTING FUNCTIONS
-@app.route('/list', methods=['GET'])
+@app.route('/notes/list', methods=['GET'])
 def list():
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
@@ -224,7 +234,17 @@ def list():
     conn.close()
     return fetch  
 
+@app.route('/tags', methods=['GET'])
 def list_tags():
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
-    pass 
+    sql_query = f"""
+                    SELECT tags.tag AND tags.title
+                    FROM tags
+                """
+    cursor.execute(sql_query)
+    
+    fetch = cursor.fetchall()
+    conn.close()
+    return fetch 
+     
