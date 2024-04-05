@@ -5,10 +5,14 @@ from datetime import date, date, timedelta
 
 app = Flask(__name__)
 
-
+# called to initialize the SQL databse schema
 def init_db(): 
+    # name of db
     conn = sqlite3.connect("note.db")
+    # cursors write to dbs
     cursor = conn.cursor()
+    # schema for the notes table
+    # notice the fields:
     cursor.execute("""CREATE TABLE IF NOT EXISTS notes(
     id INTEGER,
     title TEXT,
@@ -17,20 +21,27 @@ def init_db():
     created_date INTEGER,
     PRIMARY KEY(title))""")
     
+    # schema for the tags table
+    # notice the fields:
     cursor.execute("""CREATE TABLE IF NOT EXISTS tags(
         title TEXT, 
         tag TEXT,
         PRIMARY KEY(title,tag)
         FOREIGN KEY(title) REFERENCES notes(title)
     )""")
-    
     conn.close()
-    
+ 
+# call the above   
 init_db()
 
-###CREATION AND DELETION FUNCTIONS
+### CREATION AND DELETION FUNCTIONS
 
-#Used to create notes and create tags
+# Used to create notes
+# pass HTTP POST request to /notes endpoint
+# make sure you have Content-Type: application/json in the request header
+# payload JSON should have the following fields:
+# 'title' (required): string of note title
+# 'content' (optional): string of note content
 @app.route('/notes', methods=['POST'])
 def create_note(): 
     conn = sqlite3.connect("note.db")
@@ -49,7 +60,13 @@ def create_note():
     cursor.execute("INSERT INTO notes VALUES (?,?,?,?)", (title,content,date.today(),date.today()))
 
     conn.close()
-        
+
+# Used to write tag information to the tags table
+# pass HTTP POST request to /tags endpoint
+# Entries in tags table have fields (title, tag) 
+# payload JSON should have the following fields:
+# 'title' (required): string of note title
+# 'tag' (required): string of note tag       
 @app.route('/tags', methods=['POST'])
 def create_tag(): 
     conn = sqlite3.connect("note.db")
@@ -68,7 +85,10 @@ def create_tag():
     for value in tags: 
         cursor.execute("INSERT INTO tags VALUES (?,?)", (title, value))
 
-#used to delete notes and delete tags
+# used to delete notes
+# pass HTTP DELETE request to /notes endpoint
+# payload JSON should have the following fields:
+# 'title' (required): string of note title
 @app.route('/notes', methods=['DELETE'])
 def delete_note():
     conn = sqlite3.connect("note.db")
@@ -84,6 +104,11 @@ def delete_note():
     conn.commit()   
     conn.close()
 
+# used to delete tags
+# pass HTTP DELETE request to /tags endpoint
+# payload JSON should have the following fields:
+# 'title' (required): string of note title
+# 'tag' (required): string of note tag
 @app.route('/tags', methods=['DELETE'])
 def delete_tag():
     conn = sqlite3.connect("note.db")
@@ -104,7 +129,11 @@ def delete_tag():
     conn.commit()    
     conn.close()
 
-#used to update note content
+# used to update note content
+# pass HTTP PUT request to /notes endpoint
+# payload JSON should have the following fields:
+# 'title' (required): string of note title
+# 'content' (required): string of note content
 @app.route('/notes', methods=['PUT'])
 def update_note(): 
     conn = sqlite3.connect("note.db")
@@ -129,9 +158,17 @@ def update_note():
 
 ###SEARCHING FUNCTIONS
 
-#function for all search methods - modified date, tag, created date, etc.
-#This function will also likely be used to return content which can be used for both 
-#viewing content and PDF conversion
+# function for all search methods - modified date, tag, created date, etc.
+# pass HTTP GET request to /notes/search endpoint
+# 'search_field' (required): string representing note field to search by. must be exactly one of the following:
+# - 'modified_date', 'title', 'created_date', 'tag'
+# 'query' (required): string representing the string to search for in the 'search_field'
+# Note: searching by content will only return an exact match
+# 'return_fields' (required): list of strings representing aspects of the notes you want returned back to you
+# must be zero or more of 'modified_date', 'title', 'created_date', 'tag'
+
+# This function will also likely be used to return content which can be used for both 
+# viewing content and PDF conversion
 @app.route('/notes/search', methods=['GET'])
 def search_notes():
     # requests must have the application/json content type
@@ -209,6 +246,12 @@ def search_notes():
 
 
 ###LISTING FUNCTIONS
+# function to list return all notes. only returns the title and 'list_field' of all the notes.
+# Ex: if 'list field' is 'content' we return the content and title of every note.
+# pass HTTP GET request to /notes/list endpoint
+# 'list_field' (optional): string representing note field to list by. always lists by at least title.
+# - supports 'modified_date', 'title', 'created_date', 'content'
+
 @app.route('/notes/list', methods=['GET'])
 def list():
     conn = sqlite3.connect("note.db")
@@ -217,9 +260,9 @@ def list():
     payload = request.json # json dict
      # {"list_field": "modified_date"}
     list_field = payload['list_field']
-    assert list_field in set(['modified_date', 'title', 'created_date'])
+    assert list_field in set(['modified_date', 'title', 'created_date', 'content'])
     # handle the fact that title is always returned
-    # and you will NOT be SQL injecting this shit
+    # and you will NOT be SQL injecting this shit (try me trent)
     if list_field == 'title':
         list_field = ','
     else:
