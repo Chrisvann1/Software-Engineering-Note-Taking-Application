@@ -43,11 +43,19 @@ def printSettings():
 	printColor("Settings", getConfig(2), "")
 	lineBreak(columns, getConfig(4))
 
-#def getColors
-# this function should get colors from the config file and return them
-
+def printHelpScreen():
+	columns = shutil.get_terminal_size()[0]
+	lineBreak(columns,getConfig(4))
+	printColor("Help", getConfig(2))
+	printColor("Version: v0.01", getConfig(2))
+	printColor("If this is your first time using appName in a long while, it is recommended to check the github at https://github.com/Chrisvann1/Software-Engineering-Note-Taking-Application/ for updates.", getConfig(2))
+	printColor("Found issues can be reported at the github link.", getConfig(2))
+	printColor("Go to settings on the homepage to change color and to turn off/on Pro mode.", getConfig(2))
+	printColor("Function Help:", getConfig(2))
+	lineBreak(columns, getConfig(4))
 
 # testblock
 printStartScreen()
 printSettings()
+printHelpScreen()
 setConfig(2, 2)
