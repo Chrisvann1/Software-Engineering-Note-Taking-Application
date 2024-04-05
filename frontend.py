@@ -37,11 +37,25 @@ def optionColors():
 	for i in range(0,255):
 		print(f"\033[38;5;{str(i)}m{i}\033[0m", end = ", ")
 
+def printAppUse():
+	columns = shutil.get_terminal_size()[0]
+	lineBreak(columns, getConfig(4))
+	printColor("1. New Note        2. Edit Note        3. Search Notes        4. List Notes        5. Delete Note", getConfig(2))
+	lineBreak(columns, getConfig(4))
+	printColor("To exit, enter '0'.", getConfig(2))
+	pass
+
+
 def printSettings():
 	columns = shutil.get_terminal_size()[0]
 	lineBreak(columns, getConfig(4))
-	printColor("Settings", getConfig(2), "")
+	printColor("Settings", getConfig(2), "\n")
+	printColor("1. Pro mode: " + getConfig(6), getConfig(2), "")
+	printColor("2. Change Primary Color (WARNING: Opens a menu)", getConfig(2))
+	printColor("3. Change Secondary Color (WARNING: Opens a menu)", getConfig(2))
 	lineBreak(columns, getConfig(4))
+	printColor("To edit, enter the number of the feature you wish to edit.", getConfig(2),"")
+	printColor("To exit, enter '0'.", getConfig(2))
 
 def printHelpScreen():
 	columns = shutil.get_terminal_size()[0]
@@ -53,9 +67,11 @@ def printHelpScreen():
 	printColor("Go to settings on the homepage to change color and to turn off/on Pro mode.", getConfig(2))
 	printColor("Function Help:", getConfig(2))
 	lineBreak(columns, getConfig(4))
+	printColor("To exit, enter '0'.", getConfig(2))
 
 # testblock
 printStartScreen()
 printSettings()
 printHelpScreen()
+printAppUse()
 setConfig(2, 2)
