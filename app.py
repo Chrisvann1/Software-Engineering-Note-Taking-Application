@@ -108,10 +108,9 @@ def delete_tag(title):
 
 @app.route('/notes/search', methods=['GET'])
 def search_notes():
-    payload = request.json
-    search_field = payload.get('search_field')
-    query = payload.get('query')
-    return_fields = payload.get('return_fields')
+    search_field = request.args.get('search_field')
+    query = request.args.get('query')
+    return_fields = request.args.get('return_fields')
 
     if not search_field or not query:
         abort(400, "Search field and query are required")
@@ -119,22 +118,48 @@ def search_notes():
     if search_field not in ['modified_date', 'title', 'created_date', 'tag']:
         abort(400, "Invalid search field")
 
-    # Implement the search logic based on the search_field and query
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+
+    if search_field == 'tag':
+        cursor.execute("""
+            SELECT notes.title, notes.content, notes.modified_date, notes.created_date
+            FROM notes
+            INNER JOIN tags ON notes.title = tags.title
+            WHERE tags.tag = ?
+        """, (query,))
+    else:
+        cursor.execute(f"SELECT * FROM notes WHERE {search_field} = ?", (query,))
+
+    results = cursor.fetchall()
+    conn.close()
+
+    return jsonify(results)
 
 @app.route('/notes', methods=['GET'])
 def list_notes():
-    payload = request.json
-    list_field = payload.get('list_field')
-
-    if not list_field:
-        abort(400, "List field is required")
+    list_field = request.args.get('list_field', 'title')
 
     if list_field not in ['modified_date', 'title', 'created_date']:
         abort(400, "Invalid list field")
 
-    # Implement the listing logic based on the list_field
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM notes ORDER BY {list_field}")
+    results = cursor.fetchall()
+    conn.close()
+
+    return jsonify(results)
 
 @app.route('/tags', methods=['GET'])
 def list_tags():
-    # Implement the logic to list all tags
-    pass
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT DISTINCT tag FROM tags")
+    results = cursor.fetchall()
+    conn.close()
+
+    return jsonify([tag[0] for tag in results])
+
+if __name__ == '__main__':
+    app.run()
