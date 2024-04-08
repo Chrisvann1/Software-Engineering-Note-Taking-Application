@@ -224,6 +224,12 @@ def search_notes():
     # let us rid ourselves of that pesky comma, shall we?
     select_fields_string = select_fields_string[:-1]
 
+    if search_field == 'content':
+        sql_query = f"""
+                    SELECT {select_fields_string}
+                    FROM notes 
+                    WHERE notes.content == '{query}'
+                    """
     # modified_date looks like 'YYYY-MM-DD'
     if search_field == 'modified_date':
         # beginning of day
@@ -243,7 +249,7 @@ def search_notes():
         sql_query = f"""
                    SELECT {select_fields_string}
                    FROM notes
-                   WHERE notes.title = '{query}'
+                   WHERE notes.title == '{query}'
                    """
     # created_date looks like 'YYYY-MM-DD'
     if search_field == 'created_date':
@@ -266,8 +272,8 @@ def search_notes():
                    SELECT {select_fields_string}
                    FROM notes
                    INNER JOIN tags AS tg
-                   ON notes.title = tg.title
-                   WHERE tg.tag = '{query}'
+                   ON notes.title == tg.title
+                   WHERE tg.tag == '{query}'
                    """
     cursor.execute(sql_query)
     fetch = cursor.fetchall()
