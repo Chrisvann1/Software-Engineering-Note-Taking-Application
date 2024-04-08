@@ -191,11 +191,11 @@ def update_note():
 # function for all search methods - modified date, tag, created date, etc.
 # pass HTTP GET request to /notes/search endpoint
 # 'search_field' (required): string representing note field to search by. must be exactly one of the following:
-# - 'modified_date', 'title', 'created_date', 'tag'
+# - 'modified_date', 'title', 'created_date'
 # 'query' (required): string representing the string to search for in the 'search_field'
 # Note: searching by content will only return an exact match
 # 'return_fields' (required): list of strings representing aspects of the notes you want returned back to you
-# must be zero or more of 'modified_date', 'title', 'created_date', 'tag'
+# must be zero or more of 'modified_date', 'title', 'created_date'
 
 # This function will also likely be used to return content which can be used for both 
 # viewing content and PDF conversion
@@ -211,9 +211,9 @@ def search_notes():
     return_fields = payload.get('return_fields')
 
     # field safety
-    assert search_field in set(['modified_date', 'title', 'created_date', 'tag'])
+    assert search_field in set(['modified_date', 'title', 'created_date','content'])
     for field in return_fields:
-        assert field in set(['modified_date', 'title', 'created_date', 'tag'])
+        assert field in set(['modified_date', 'title', 'created_date','content'])
     
     # we will always return title
     if "title" not in return_fields:
@@ -274,6 +274,28 @@ def search_notes():
     conn.close()
     return fetch
 
+
+@app.route('/tags/search', methods=['GET'])
+def search_tags():
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    payload = request.json
+    
+    query = payload.get('query')
+    
+    sql_query = f"""
+                SELECT tags.title, tags.tag
+                FROM tags
+                WHERE tags.tag == '{query}'
+                """
+                
+    cursor.execute(sql_query)
+    fetch = cursor.fetchall()
+    conn.close()
+    return fetch
+    
+    # title
+
 #{"list_field":"title"}
 ###LISTING FUNCTIONS
 #There are problems here. Currently, the list by modified date and list by created 
@@ -294,7 +316,7 @@ def list():
     payload = request.json # json dict
      # {"list_field": "modified_date"}
     list_field = payload['list_field']
-    assert list_field in set(['modified_date', 'title', 'created_date', 'content'])
+    assert list_field in set(['modified_date', 'title', 'created_date'])
     # handle the fact that title is always returned
     # and you will NOT be SQL injecting this shit (try me trent)
     if list_field == 'title':
