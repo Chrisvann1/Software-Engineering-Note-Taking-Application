@@ -1,0 +1,6 @@
+PrimaryColor
+2
+SecondaryColor
+31
+Pro mode
+0
