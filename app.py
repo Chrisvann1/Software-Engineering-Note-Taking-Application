@@ -327,12 +327,22 @@ def list():
     # and you will NOT be SQL injecting this shit (try me trent)
     if list_field == 'title':
         list_field = ''
+        sql_query = f"""
+            SELECT notes.title{list_field}
+            FROM notes ORDER BY notes.title
+            """
+    elif list_field == 'modified_date':
+        list_field = ", notes." + list_field
+        sql_query = f"""
+        SELECT notes.title{list_field}
+        FROM notes ORDER BY notes.modified_date
+        """
     else:
         list_field = ", notes." + list_field
-    sql_query = f"""
-                   SELECT notes.title{list_field}
-                   FROM notes
-                   """
+        sql_query = f"""
+                    SELECT notes.title{list_field}
+                    FROM notes ORDER BY notes.created_date
+                    """
     cursor.execute(sql_query)
     
     fetch = cursor.fetchall()
