@@ -1,6 +1,7 @@
 import os
 import shutil
 import string
+import apiCalls
 
 def getConfig(line):
 	# Line 2 is Primary color, 4 is Secondary color, 6 is pro mode
