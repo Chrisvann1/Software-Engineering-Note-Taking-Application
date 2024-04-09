@@ -2,6 +2,9 @@ import os
 import shutil
 import string
 
+def clearConsole():
+	os.system('cls' if os.name == 'nt' else 'clear')
+
 def getConfig(line):
 	# Line 2 is Primary color, 4 is Secondary color, 6 is pro mode
 	with open('config.txt', 'r') as file:
@@ -32,6 +35,9 @@ def printStartScreen():
 	printColor("Welcome to appName, select what you want to do", getConfig(2), "")
 	lineBreak(columns, getConfig(4))
 	printColor("1. Open app        2. Settings        3. Help", 15)
+	lineBreak(columns, getConfig(4))
+	printColor("To continue, enter the number of the menu you want.", 15)
+	printColor("To exit, enter '0'.",15)
 
 def optionColors():
 	for i in range(0,255):
@@ -42,9 +48,9 @@ def printAppUse():
 	lineBreak(columns, getConfig(4))
 	printColor("1. New Note        2. Edit Note        3. Search Notes        4. List Notes        5. Delete Note", getConfig(2))
 	lineBreak(columns, getConfig(4))
+	printColor("To continue, enter the number of what you wish to do.",15)
 	printColor("To exit, enter '0'.", 15)
 	pass
-
 
 def printSettings():
 	columns = shutil.get_terminal_size()[0]
@@ -69,9 +75,73 @@ def printHelpScreen():
 	lineBreak(columns, getConfig(4))
 	printColor("To exit, enter '0'.", 15)
 
+#def getColors
+# this function should get colors from the config file and return them
+
+def runtime(state):
+	while(True):
+		clearConsole()
+		columns = shutil.get_terminal_size()[0]
+		match (state):
+			#Close app
+			case -1:
+				clearConsole()
+				return
+			# Start page
+			case 0:
+				printStartScreen()
+			case 10 | 20 | 30:
+				printStartScreen()
+				state = 0
+			# Application-in-use page
+			case 1:
+				printAppUse()
+			# Settings page
+			case 2:
+				printSettings()
+			case 220 | 230:
+				printSettings()
+				state = 2
+			# Primary color selection
+			case 22:
+				lineBreak(columns, 15)
+				print("Choose a primary color")
+				printColor("current color", getConfig(2))
+				lineBreak(columns, 15)
+				optionColors()
+				print("\n")
+				lineBreak(columns, 15)
+				printColor("To select, enter the number pertaining to the color you want.", 15)
+				printColor("To exit, enter '0'.", 15)
+				newColor = input(": ")
+				setConfig(2,newColor)
+				
+			# Secondary color selection
+			case 23:
+				lineBreak(columns, 15)
+				print("Choose a secondary color")
+				printColor("current color", getConfig(4))
+				lineBreak(columns, 15)
+				optionColors()
+				print("\n")
+				lineBreak(columns, 15)
+				printColor("To select, enter the number pertaining to the color you want.", 15)
+				printColor("To exit, enter '0'.", 15)
+				newColor = input(": ")
+				setConfig(4,newColor)
+				
+			# General Help page	
+			case 3:
+				printHelpScreen() 
+			case 999:
+				printColor("Invalid state", 9)
+				break
+		userInput = input(": ")
+		# temporary
+		if (state == 0 and userInput == '0'):
+			state = -1
+		else:
+			state = (state * 10) + int(userInput)
 # testblock
-printStartScreen()
-printSettings()
-printHelpScreen()
-printAppUse()
-setConfig(2, 2)
+
+runtime(0)
