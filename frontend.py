@@ -2,6 +2,9 @@ import os
 import shutil
 import string
 
+def clearConsole():
+	os.system('cls' if os.name == 'nt' else 'clear')
+
 def getConfig(line):
 	# Line 2 is Primary color, 4 is Secondary color, 6 is pro mode
 	with open('config.txt', 'r') as file:
@@ -31,7 +34,8 @@ def printStartScreen():
 	lineBreak(columns, getConfig(4))
 	printColor("Welcome to appName, select what you want to do", getConfig(2), "")
 	lineBreak(columns, getConfig(4))
-	printColor("1. Open app        2. Settings        3. Help", getConfig(2))
+	print("\n")
+	printColor("1. Open app        2. Settings        3. Help", 15)
 
 def optionColors():
 	for i in range(0,255):
@@ -43,11 +47,61 @@ def printSettings():
 	printColor("Settings", getConfig(2), "")
 	lineBreak(columns, getConfig(4))
 
-#def getColors
-# this function should get colors from the config file and return them
+def runtime(state):
+	while(True):
+		clearConsole()
+		columns = shutil.get_terminal_size()[0]
+		match (state):
+			#Close app
+			case -1:
+				clearConsole()
+				return
+			# Start page
+			case 0:
+				printStartScreen()
+			case 20 | 30:
+				printStartScreen()
+				state = 0
+			# Application-in-use page
+			#case 1:
 
+			# Settings page
+			case 2:
+				printSettings()
+			case 220 | 230:
+				printSettings()
+				state = 2
+			# Primary color selection
+			case 22:
+				lineBreak(columns, 15)
+				print("Choose a primary color")
+				printColor("current color", getConfig(2))
+				lineBreak(columns, 15)
+				optionColors()
+				newColor = input(": ")
+				setConfig(2,newColor)
+			# Secondary color selection
+			case 23:
+				lineBreak(columns, 15)
+				print("Choose a secondary color")
+				printColor("current color", getConfig(4))
+				lineBreak(columns, 15)
+				optionColors()
+				newColor = input(": ")
+				setConfig(4,newColor)
+			# General Help page	
+			case 3:
+				pass 
+			case 999:
+				printColor("Invalid state", 9)
+				break
+		userInput = input(": ")
+		# temporary
+		if (state == 0 and userInput == '0'):
+			state = -1
+		else:
+			state = (state * 10) + int(userInput)
 
 # testblock
-printStartScreen()
-printSettings()
-setConfig(2, 2)
+
+runtime(0)
