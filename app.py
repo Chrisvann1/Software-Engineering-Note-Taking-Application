@@ -329,7 +329,7 @@ def list():
         list_field = ''
         sql_query = f"""
             SELECT notes.title{list_field}
-            FROM notes ORDER BY notes.title
+            FROM notes ORDER BY UPPER(notes.title)
             """
     elif list_field == 'modified_date':
         list_field = ", notes." + list_field
@@ -349,13 +349,13 @@ def list():
     conn.close()
     return fetch  
 
-@app.route('/tags', methods=['GET'])
+@app.route('/tags/list', methods=['GET'])
 def list_tags():
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
     sql_query = f"""
                     SELECT tags.tag, tags.title
-                    FROM tags
+                    FROM tags ORDER BY UPPER(tags.tag)
                 """
     cursor.execute(sql_query)
     
