@@ -48,7 +48,7 @@ def optionColors():
 def printAppUse():
 	columns = shutil.get_terminal_size()[0]
 	lineBreak(columns, getConfig(4))
-	printColor("1. New Note        2. Edit Note        3. Search Notes        4. List Notes        5. Delete Note", getConfig(2))
+	printColor("1. New Note        2. Edit Note(Limited Functionality in v0.01)        3. Search Notes        4. List Notes        5. Delete Note", getConfig(2))
 	lineBreak(columns, getConfig(4))
 	printColor("To continue, enter the number of what you wish to do.",15)
 	printColor("To exit, enter '0'.", 15)
