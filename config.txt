@@ -1,6 +1,6 @@
 PrimaryColor
-28
+80
 SecondaryColor
-31
+48
 Pro mode
 0
