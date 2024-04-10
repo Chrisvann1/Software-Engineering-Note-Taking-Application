@@ -82,7 +82,16 @@ body:
 		- must be in ('modified_date', 'title', 'created_date', 'tag')
 
 ## Additional Feature 3: Create a directory/tag
-
+Creates a list of tags to be applied to a specific note.
+```
+POST /tags
+```
+header:
+	`Content-Type: application/json` (required)
+body:
+	`'title'` (required): string representing specific note title.
+	`'tag'` (required): List of strings representing the names of the tags you want to apply'
+		example format: ["Tag title 1", "Tag title 2", "TAG title three"]
 ## Additional Feature 4: Delete a directory/tag
 
 ## Additional Feature 5: List directories/tags
