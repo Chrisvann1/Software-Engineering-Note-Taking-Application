@@ -111,6 +111,7 @@ body:
 		- must be in ('modified_date', 'title', 'created_date', 'tag')
 
 ## Additional Feature 3: Create a directory/tag
+Creates a list of tags to be applied to a specific note.
 ```
 POST /tags
 ```
