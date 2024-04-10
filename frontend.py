@@ -35,17 +35,27 @@ def printStartScreen():
 	printColor("Welcome to appName, select what you want to do", getConfig(2), "")
 	lineBreak(columns, getConfig(4))
 	print("\n")
-	printColor("1. Open app        2. Settings        3. Help", 15)
+	printColor("0. Exit APPNAME", 15)
+	printColor("1. Open app", 15)
+	printColor("2. Settings", 15)
+	printColor("3. Help", 15)
 
 def optionColors():
 	for i in range(0,255):
-		print(f"\033[38;5;{str(i)}m{i}\033[0m", end = ", ")
+		print(f"\033[38;5;{str(i)}m{i}\033[0m", end = "\n" if i == 254 else ", "
+)
 
 def printSettings():
 	columns = shutil.get_terminal_size()[0]
 	lineBreak(columns, getConfig(4))
 	printColor("Settings", getConfig(2), "")
 	lineBreak(columns, getConfig(4))
+	print("\n")
+	printColor("0. Go back", 15)
+	printColor("1. Pro-Mode", 15)
+	printColor("2. Edit primary color", 15)
+	printColor("3. Edit secondary color", 15)
+
 
 def runtime(state):
 	while(True):
@@ -68,9 +78,24 @@ def runtime(state):
 			# Settings page
 			case 2:
 				printSettings()
-			case 220 | 230:
+			case 210 | 220 | 230:
 				printSettings()
 				state = 2
+			# Change status of pro mode
+			case 21:
+				print("Currently pro mode is " 
+					+ "on" if int(getConfig(6)) == 1 else "off" 
+					+ " to turn it " 
+					+ "off" if int(getConfig(6)) == 1 else "on" 
+					+ " enter" 
+					+ "0" if int(getConfig(6)) == 1 else "1")
+				response = input(": ")
+				setConfig(6)
+				clearConsole()
+				lineBreak(columns, 15)
+				printColor("Success, enter 0 to go back", getConfig(2))
+				lineBreak(columns, 15)
+			
 			# Primary color selection
 			case 22:
 				lineBreak(columns, 15)
@@ -80,6 +105,11 @@ def runtime(state):
 				optionColors()
 				newColor = input(": ")
 				setConfig(2,newColor)
+				clearConsole()
+				lineBreak(columns, 15)
+				printColor("Success, enter 0 to go back", getConfig(2))
+				lineBreak(columns, 15)
+
 			# Secondary color selection
 			case 23:
 				lineBreak(columns, 15)
@@ -89,6 +119,11 @@ def runtime(state):
 				optionColors()
 				newColor = input(": ")
 				setConfig(4,newColor)
+				clearConsole()
+				lineBreak(columns, 15)
+				printColor("Success, enter 0 to go back", getConfig(4))
+				lineBreak(columns, 15)
+
 			# General Help page	
 			case 3:
 				pass 
