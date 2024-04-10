@@ -58,9 +58,9 @@ def printSettings():
 	columns = shutil.get_terminal_size()[0]
 	lineBreak(columns, getConfig(4))
 	printColor("Settings", 15, "\n")
-  printColor("To edit, enter the number of the feature you wish to edit.", 15)
-  lineBreak(columns, getConfig(4)
-  printColor("0. Go back", 15)
+	printColor("To edit, enter the number of the feature you wish to edit.", 15)
+	lineBreak(columns, getConfig(4))
+	printColor("0. Go back", 15)
 	printColor("1. Pro mode: " + getConfig(6), 15, "")
 	printColor("2. Change Primary Color (WARNING: Opens a menu)", 15)
 	printColor("3. Change Secondary Color (WARNING: Opens a menu)", 15)
@@ -127,13 +127,12 @@ def runtime(state):
 				print("\n")
 				lineBreak(columns, 15)
 				printColor("To select, enter the number pertaining to the color you want.", 15)
-				printColor("To exit, enter '0'.", 15)
 				newColor = input(": ")
 				setConfig(2,newColor)
 				clearConsole()
-				lineBreak(columns, 15)
+				lineBreak(columns, getConfig(4))
 				printColor("Success, enter 0 to go back", getConfig(2))
-				lineBreak(columns, 15)
+				lineBreak(columns, getConfig(4))
 
 			# Secondary color selection
 			case 23:
@@ -145,13 +144,12 @@ def runtime(state):
 				print("\n")
 				lineBreak(columns, 15)
 				printColor("To select, enter the number pertaining to the color you want.", 15)
-				printColor("To exit, enter '0'.", 15)
 				newColor = input(": ")
 				setConfig(4,newColor)
 				clearConsole()
-				lineBreak(columns, 15)
-				printColor("Success, enter 0 to go back", getConfig(4))
-				lineBreak(columns, 15)
+				lineBreak(columns, getConfig(4))
+				printColor("Success, enter 0 to go back", getConfig(2))
+				lineBreak(columns, getConfig(4))
 
 			# General Help page	
 			case 3:
