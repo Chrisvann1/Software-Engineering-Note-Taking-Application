@@ -119,7 +119,7 @@ header:
 	`Content-Type: application/json` (required)
 body:
 	`"title"` (required): string of note title
-	`"tag"` (required): list of strings for tags Exp: ["tag":"tag1", "tag2", "tag3"]
+	`"tag"` (required): list of strings for tags Exp: "tag":["tag1", "tag2", "tag3"]
 ## Additional Feature 4: Delete a directory/tag
 ```
 DELETE /tags
@@ -128,7 +128,7 @@ header:
 	`Content-Type: application/json` (required)
 body:
 	`"title"` (required): string of note title
-	`"tag"` (required): list of strings for tags. Exp: ["tag":"tag1", "tag2", "tag3"]
+	`"tag"` (required): list of strings for tags. Exp: "tag":["tag1", "tag2", "tag3"]
 ## Additional Feature 5: List directories/tags
 List all the tags that exist.
 ```
