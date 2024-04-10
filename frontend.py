@@ -2,6 +2,7 @@ import os
 import shutil
 import string
 
+# Base frontend functionality
 def clearConsole():
 	os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -19,6 +20,11 @@ def setConfig(line, newContent):
 	with open('config.txt', 'w') as file:
 		file.writelines(lines)
 
+def optionColors():
+	for i in range(0,255):
+		print(f"\033[38;5;{str(i)}m{i}\033[0m", end = "\n" if i == 254 else ", "
+)
+
 def printColor(text, color, tail = "\n"):
 	color = str(color)
 	print(f"\033[38;5;{color}m{text}\033[0m", end = tail)
@@ -29,6 +35,60 @@ def lineBreak(columns, color):
 		line += '-'
 	printColor(line, color, "")
 
+
+
+# Http integration managment
+# generic verion of a http request, formats to request well.
+def request():
+	pass
+
+# generic version of a http response, formats to respond well.
+def response():
+	pass
+
+
+
+# Note Searching
+def listNotes():
+	#by created date, modified date, title
+	pass
+
+def searchNotes():
+	#by content, title, tags, date
+	pass
+
+
+
+# Note Classification Suite
+def addTag():
+	# Makes a list of tags that should be added to the title, does not need to check if tags exist
+	pass
+
+def deletetag():
+	# Delete a tag from a note
+	pass
+
+def listTags():
+	# Lists tags of all notes
+	pass 
+
+
+
+# Note creation suite
+def createNote():
+	#addTag()
+	pass 
+
+def deleteNote():
+	pass
+
+def addContent():
+	# This should add to an existing note
+	pass 
+
+
+
+# States of operation
 def printStartScreen():
 	columns = shutil.get_terminal_size()[0]
 	lineBreak(columns, getConfig(4))
@@ -39,11 +99,6 @@ def printStartScreen():
 	printColor("1. Open app", 15)
 	printColor("2. Settings", 15)
 	printColor("3. Help", 15)
-
-def optionColors():
-	for i in range(0,255):
-		print(f"\033[38;5;{str(i)}m{i}\033[0m", end = "\n" if i == 254 else ", "
-)
 
 def printAppUse():
 	columns = shutil.get_terminal_size()[0]
@@ -77,7 +132,9 @@ def printHelpScreen():
 	lineBreak(columns, getConfig(4))
 	printColor("0. Go back", 15)
 
-  
+
+
+# The runtime funciton, (acts as a main loop)
 def runtime(state):
 	while(True):
 		clearConsole()
@@ -96,6 +153,9 @@ def runtime(state):
 			# Application-in-use page
 			case 1:
 				printAppUse()
+			case 110 | 120 | 130 | 140 | 150:
+				printAppUse()
+				state = 1
 			# Settings page
 			case 2:
 				printSettings()
@@ -163,6 +223,8 @@ def runtime(state):
 			state = -1
 		else:
 			state = (state * 10) + int(userInput)
-# testblock
 
+
+
+# testblock
 runtime(0)
