@@ -9,7 +9,7 @@ def request():
 def response():
 	pass
 
-header = "Content-Type: application/json"
+header = {'Content-Type': 'application/json'}
 
 # Note Searching
 def listNotes():
@@ -26,12 +26,12 @@ def searchNotes():
 def addTag(noteTitle, tagName):
 	# Makes a list of tags that should be added to the title, does not need to check if tags exist
     url = "http://127.0.0.1:5000/tags"
-    requests.post(url,headers=header, data={'title': noteTitle, 'tag': tagName})
+    requests.post(url,headers=header, json={'title': noteTitle, 'tag': tagName})
 
 def deletetag(noteTitle, tagName):
 	# Delete a tag from a note
 	url = "http://127.0.0.1:5000/tags"
-	requests.delete(url,headers=header, data={'title': noteTitle, 'tag': tagName})
+	requests.delete(url,headers=header, json={'title': noteTitle, 'tag': tagName})
 
 def listTags():
 	# Lists tags of all notes
@@ -42,22 +42,22 @@ def listTags():
 # Note creation suite
 def createNote(noteTitle, noteContent):
 	url = "http://127.0.0.1:5000/notes"
-	requests.post(url,headers=header, data={'title': noteTitle, 'content': noteContent}) 
+	requests.post(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 
-def deleteNote(noteTitle, noteContent):
+def deleteNote(noteTitle):
 	url = "http://127.0.0.1:5000/notes"
-	requests.delete(url,headers=header, data={'title': noteTitle, 'content': noteContent}) 
+	requests.delete(url,headers=header, json={'title': noteTitle}) 
 
-def addContent(noteTitle):
+def addContent(noteTitle, noteContent):
 	# This should add to an existing note
 	url = "http://127.0.0.1:5000/notes"
-	requests.put(url,headers=header, data={'title': noteTitle}) 
+	requests.put(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 
 
 def main():
-	nTitle = "test note"
-	nContent = "This is the note"
+	nTitle = "test note2"
+	nContent = "This is the note2"
 	tName = "test tag"
-	createNote(nTitle, nContent)
+	addContent(nTitle, nContent)
 
 main()
