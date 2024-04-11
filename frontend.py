@@ -2,6 +2,9 @@ import os
 import shutil
 import string
 
+import apiCalls
+
+# Base frontend functionality
 def clearConsole():
 	os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -19,6 +22,11 @@ def setConfig(line, newContent):
 	with open('config.txt', 'w') as file:
 		file.writelines(lines)
 
+def optionColors():
+	for i in range(0,255):
+		print(f"\033[38;5;{str(i)}m{i}\033[0m", end = "\n" if i == 254 else ", "
+)
+
 def printColor(text, color, tail = "\n"):
 	color = str(color)
 	print(f"\033[38;5;{color}m{text}\033[0m", end = tail)
@@ -29,6 +37,7 @@ def lineBreak(columns, color):
 		line += '-'
 	printColor(line, color, "")
 
+# States of operation
 def printStartScreen():
 	columns = shutil.get_terminal_size()[0]
 	lineBreak(columns, getConfig(4))
@@ -39,11 +48,6 @@ def printStartScreen():
 	printColor("1. Open app", 15)
 	printColor("2. Settings", 15)
 	printColor("3. Help", 15)
-
-def optionColors():
-	for i in range(0,255):
-		print(f"\033[38;5;{str(i)}m{i}\033[0m", end = "\n" if i == 254 else ", "
-)
 
 def printAppUse():
 	columns = shutil.get_terminal_size()[0]
@@ -77,7 +81,9 @@ def printHelpScreen():
 	lineBreak(columns, getConfig(4))
 	printColor("0. Go back", 15)
 
-  
+
+
+# The runtime funciton, (acts as a main loop)
 def runtime(state):
 	while(True):
 		clearConsole()
@@ -96,6 +102,9 @@ def runtime(state):
 			# Application-in-use page
 			case 1:
 				printAppUse()
+			case 110 | 120 | 130 | 140 | 150:
+				printAppUse()
+				state = 1
 			# Settings page
 			case 2:
 				printSettings()
@@ -163,6 +172,8 @@ def runtime(state):
 			state = -1
 		else:
 			state = (state * 10) + int(userInput)
-# testblock
 
+
+
+# testblock
 runtime(0)
