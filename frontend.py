@@ -1,6 +1,7 @@
 import os
 import shutil
 import string
+import time
 
 import apiCalls
 
@@ -52,7 +53,14 @@ def printStartScreen():
 def printAppUse():
 	columns = shutil.get_terminal_size()[0]
 	lineBreak(columns, getConfig(4))
-	printColor("1. New Note        2. Edit Note        3. Search Notes        4. List Notes        5. Delete Note", getConfig(2))
+	printColor("AppUse", getConfig(2))
+	lineBreak(columns, getConfig(4))
+	printColor("0. Go back", getConfig(2),"")
+	printColor("1. New Note", getConfig(2),"")
+	printColor("2. Edit Note(Limited Functionality in v0.01)", getConfig(2),"")
+	printColor("3. Search Notes",getConfig(2),"")
+	printColor("4. List Notes",getConfig(2),"")
+	printColor("5. Delete Note",getConfig(2),"")
 	lineBreak(columns, getConfig(4))
 	printColor("To continue, enter the number of what you wish to do.",15)
 	printColor("To exit, enter '0'.", 15)
@@ -93,18 +101,114 @@ def runtime(state):
 			case -1:
 				clearConsole()
 				return
+			
 			# Start page
 			case 0:
 				printStartScreen()
 			case 10 | 20 | 30:
 				printStartScreen()
 				state = 0
+
 			# Application-in-use page
 			case 1:
 				printAppUse()
 			case 110 | 120 | 130 | 140 | 150:
 				printAppUse()
 				state = 1
+
+			case 11:
+				#newNote
+				lineBreak(columns, getConfig(4))
+				printColor("Creating note...", getConfig(2))
+				lineBreak(columns, getConfig(4))
+				printColor("What would you like to name your new note?",getConfig(2), "")
+				newNoteName = input(": ")
+				printColor("What content would you like to add to start? (If you wish to add content later, enter 'none'.)", getConfig(2),"")
+				newContent = input(": ")
+				if (newContent == 'none'):
+					pass
+					#apiCalls.createNote(newNoteName,"")
+				else:
+					pass
+					#apiCalls.createNote(newNoteName,newContent)
+				printColor("Would you like to add any tags? (Seperate tags with commas. If none or you wish to add later, enter 'none'.)",getConfig(2),"")
+				newTags = input(": ")
+				newTagList = newTags.split(",")
+				if(newTags == 'none'):
+					lineBreak(columns, getConfig(4))
+					printColor("Note Created!",getConfig(2))
+					time.sleep(3)
+					printAppUse()
+					state = 1
+				else:
+					#apiCalls.addTag(newNoteName,newTagList)
+					lineBreak(columns,getConfig(4))
+					printColor("Note Created!", getConfig(2))
+					time.sleep(3)
+					printAppUse()
+					state = 1
+				
+				
+			case 12:
+				lineBreak(columns, getConfig(4))
+				printColor("Editing a note...",getConfig(2))
+				lineBreak(columns, getConfig(4))
+				printColor("0. Go back",getConfig(2),"")
+				printColor("1. Add Content",getConfig(2),"")
+				printColor("2. Edit Content (temporarily not working. Coming in v0.02)",getConfig(2),"")
+				printColor("3. Add tags to note.",getConfig(2),"")
+				printColor("4. Delete tags from note", getConfig(2))
+				pass
+
+
+				#editNote
+				pass
+			case 121:
+				#addContent
+				pass
+			case 122:
+				#editContent (limited/cut temporarily from time)
+				pass
+			case 123:
+				#addTag
+				pass
+			case 124:
+				#deleteTag
+				pass
+
+			case 13:
+				#searchNotes
+				pass
+
+			case 14:
+				#listNotes
+				pass
+			case 141:
+				#list notes by created date
+				pass
+			case 142:
+				#list notes by modified date
+				pass
+			case 143:
+				#list notes by title
+				pass
+			case 144:
+				#list tags
+				pass
+
+			case 15:
+				#deleteNote
+				lineBreak(columns, getConfig(4))
+				printColor("Deleting note...", getConfig(2))
+				lineBreak(columns, getConfig(4))
+				printColor("Enter the name of the note you wish to delete.",getConfig(2),"")
+				delNoteName = input(": ")
+				#apiCalls.deleteNote(delNoteName)
+				printColor("Note deleted or it already does not exist", getConfig(2))
+				time.sleep(3)
+				printAppUse()
+				state = 1
+
 			# Settings page
 			case 2:
 				printSettings()
@@ -162,7 +266,8 @@ def runtime(state):
 
 			# General Help page	
 			case 3:
-				printHelpScreen() 
+				printHelpScreen()
+			
 			case 999:
 				printColor("Invalid state", 9)
 				break
