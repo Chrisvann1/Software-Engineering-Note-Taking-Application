@@ -1,3 +1,5 @@
+import requests
+
 # Http integration managment
 # generic verion of a http request, formats to request well.
 def request():
@@ -7,7 +9,7 @@ def request():
 def response():
 	pass
 
-
+header = {'Content-Type': 'application/json'}
 
 # Note Searching
 def listNotes():
@@ -21,13 +23,15 @@ def searchNotes():
 
 
 # Note Classification Suite
-def addTag():
+def addTag(noteTitle, tagName):
 	# Makes a list of tags that should be added to the title, does not need to check if tags exist
-	pass
+    url = "http://127.0.0.1:5000/tags"
+    requests.post(url,headers=header, json={'title': noteTitle, 'tag': tagName})
 
-def deletetag():
+def deletetag(noteTitle, tagName):
 	# Delete a tag from a note
-	pass
+	url = "http://127.0.0.1:5000/tags"
+	requests.delete(url,headers=header, json={'title': noteTitle, 'tag': tagName})
 
 def listTags():
 	# Lists tags of all notes
@@ -36,15 +40,24 @@ def listTags():
 
 
 # Note creation suite
-def createNote():
-	#addTag()
-	pass 
+def createNote(noteTitle, noteContent):
+	url = "http://127.0.0.1:5000/notes"
+	requests.post(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 
-def deleteNote():
-	pass
+def deleteNote(noteTitle):
+	url = "http://127.0.0.1:5000/notes"
+	requests.delete(url,headers=header, json={'title': noteTitle}) 
 
-def addContent():
+def addContent(noteTitle, noteContent):
 	# This should add to an existing note
-	pass 
+	url = "http://127.0.0.1:5000/notes"
+	requests.put(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 
 
+def main():
+	nTitle = "test note2"
+	nContent = "This is the note2"
+	tName = "test tag"
+	addContent(nTitle, nContent)
+
+main()
