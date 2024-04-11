@@ -60,6 +60,7 @@ def main():
 	title = "title1"
 	content = "content1"
 	mContent = "more content"
+
 	createNote(title,content)
 	addContent(title, mContent)
 
@@ -72,5 +73,10 @@ def main():
 
 	r = listNotes(listCo)
 	print(r.content)
+	
+	searchBy = ['title','content']
+	r = searchNotes('title', 'title1', searchBy)
+	print(r.content)
+
 
 main()
