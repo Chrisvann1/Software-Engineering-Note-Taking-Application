@@ -150,6 +150,17 @@ def runtime(state):
 				
 				
 			case 12:
+				lineBreak(columns, getConfig(4))
+				printColor("Editing a note...",getConfig(2))
+				lineBreak(columns, getConfig(4))
+				printColor("0. Go back",getConfig(2),"")
+				printColor("1. Add Content",getConfig(2),"")
+				printColor("2. Edit Content (temporarily not working. Coming in v0.02)",getConfig(2),"")
+				printColor("3. Add tags to note.",getConfig(2),"")
+				printColor("4. Delete tags from note", getConfig(2))
+				pass
+
+
 				#editNote
 				pass
 			case 121:
