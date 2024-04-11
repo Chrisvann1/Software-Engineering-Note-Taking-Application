@@ -57,13 +57,13 @@ def addContent(noteTitle, noteContent):
 
 def main():
 	listCo = 'title'
-	title = "title1"
+	title = "Btitle1"
 	content = "content1"
 	mContent = "more content"
 	createNote(title,content)
 	addContent(title, mContent)
 
-	title = "title2"
+	title = "Atitle2"
 	content = "content2"
 	createNote(title,content)
 
