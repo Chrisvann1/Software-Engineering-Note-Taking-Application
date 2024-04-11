@@ -12,13 +12,15 @@ def response():
 header = {'Content-Type': 'application/json'}
 
 # Note Searching
-def listNotes():
+def listNotes(listBy):
 	#by created date, modified date, title
-	pass
+	url = "http://127.0.0.1:5000/notes/list"
+	return requests.get(url,headers=header, json={'list_field': listBy})
 
-def searchNotes():
+def searchNotes(field, searchQuery, returnField):
 	#by content, title, tags, date
-	pass
+	url = "http://127.0.0.1:5000/notes/search"
+	return requests.get(url,headers=header, json={'search_field': field, 'query': searchQuery, 'return_fields': returnField})
 
 
 
@@ -26,12 +28,12 @@ def searchNotes():
 def addTag(noteTitle, tagName):
 	# Makes a list of tags that should be added to the title, does not need to check if tags exist
     url = "http://127.0.0.1:5000/tags"
-    requests.post(url,headers=header, json={'title': noteTitle, 'tag': tagName})
+    return requests.post(url,headers=header, json={'title': noteTitle, 'tag': tagName})
 
 def deletetag(noteTitle, tagName):
 	# Delete a tag from a note
 	url = "http://127.0.0.1:5000/tags"
-	requests.delete(url,headers=header, json={'title': noteTitle, 'tag': tagName})
+	return requests.delete(url,headers=header, json={'title': noteTitle, 'tag': tagName})
 
 def listTags():
 	# Lists tags of all notes
@@ -42,22 +44,39 @@ def listTags():
 # Note creation suite
 def createNote(noteTitle, noteContent):
 	url = "http://127.0.0.1:5000/notes"
-	requests.post(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
+	return requests.post(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 
 def deleteNote(noteTitle):
 	url = "http://127.0.0.1:5000/notes"
-	requests.delete(url,headers=header, json={'title': noteTitle}) 
+	return requests.delete(url,headers=header, json={'title': noteTitle}) 
 
 def addContent(noteTitle, noteContent):
 	# This should add to an existing note
 	url = "http://127.0.0.1:5000/notes"
-	requests.put(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
-
+	return requests.put(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 
 def main():
-	nTitle = "test note2"
-	nContent = "This is the note2"
-	tName = "test tag"
-	addContent(nTitle, nContent)
+	listCo = 'title'
+	title = "title1"
+	content = "content1"
+	mContent = "more content"
+
+	createNote(title,content)
+	addContent(title, mContent)
+
+	title = "title2"
+	content = "content2"
+	createNote(title,content)
+
+	# tag = "testTag"
+	# addTag(title, tag)
+
+	r = listNotes(listCo)
+	print(r.content)
+	
+	searchBy = ['title','content']
+	r = searchNotes('title', 'title1', searchBy)
+	print(r.content)
+
 
 main()
