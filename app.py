@@ -1,7 +1,8 @@
 from flask import Flask 
 import sqlite3
-from flask import request, abort
-from datetime import date, date, timedelta
+from flask import request, abort, jsonify
+from datetime import date, date, timedelta, datetime
+
 
 app = Flask(__name__)
 
@@ -195,7 +196,7 @@ def update_note():
 # 'query' (required): string representing the string to search for in the 'search_field'
 # Note: searching by content will only return an exact match
 # 'return_fields' (required): list of strings representing aspects of the notes you want returned back to you
-# must be zero or more of 'modified_date', 'title', 'created_date'
+# must be zero or more of 'modified_date', 'title', 'created_date', 'content'
 
 # This function will also likely be used to return content which can be used for both 
 # viewing content and PDF conversion
@@ -207,6 +208,7 @@ def search_notes():
     cursor = conn.cursor()
     payload = request.json # json dict
     search_field = payload.get('search_field') #string
+    print(search_field)
     query = payload.get('query')
     return_fields = payload.get('return_fields')
 
@@ -232,18 +234,13 @@ def search_notes():
                     """
     # modified_date looks like 'YYYY-MM-DD'
     if search_field == 'modified_date':
-        # beginning of day
         start = datetime.strptime(query, '%Y-%m-%d')
-        # end of day
-        end = start + timedelta(days=1)
-        # into decimals then strings
-        start = str(start.timestamp())
-        end = str(end.timestamp())
+
+        # Construct SQL query
         sql_query = f"""
-                   SELECT {select_fields_string}
-                   FROM notes
-                   WHERE notes.modified_date > {start} AND notes.modified_date < {end}
-                   """
+                     SELECT {select_fields_string} FROM notes 
+                     WHERE created_date == '{start.strftime('%Y-%m-%d')}'
+                     """
     # title
     if search_field == 'title':
         sql_query = f"""
@@ -253,18 +250,13 @@ def search_notes():
                    """
     # created_date looks like 'YYYY-MM-DD'
     if search_field == 'created_date':
-        # beginning of day
         start = datetime.strptime(query, '%Y-%m-%d')
-        # end of day
-        end = start + timedelta(days=1)
-        # into decimals then strings
-        start = str(start.timestamp())
-        end = str(end.timestamp())
+        # Construct SQL query
         sql_query = f"""
-                   SELECT {select_fields_string}
-                   FROM notes
-                   WHERE notes.created_date > {start} AND notes.created_date < {end}
-                   """
+                     SELECT {select_fields_string} FROM notes 
+                     WHERE created_date >= '{start.strftime('%Y-%m-%d')}'
+                     """
+
     # tag (super hard ?)
     if search_field == 'tag':
         # gets the notes objects that match the tag search
@@ -278,7 +270,7 @@ def search_notes():
     cursor.execute(sql_query)
     fetch = cursor.fetchall()
     conn.close()
-    return fetch
+    return jsonify(fetch)
 
 
 @app.route('/tags/search', methods=['GET'])
@@ -298,7 +290,7 @@ def search_tags():
     cursor.execute(sql_query)
     fetch = cursor.fetchall()
     conn.close()
-    return fetch
+    return jsonify(fetch)
     
     # title
 
@@ -347,7 +339,7 @@ def list():
     
     fetch = cursor.fetchall()
     conn.close()
-    return fetch  
+    return jsonify(fetch) 
 
 @app.route('/tags/list', methods=['GET'])
 def list_tags():
@@ -361,6 +353,6 @@ def list_tags():
     
     fetch = cursor.fetchall()
     conn.close()
-    return fetch 
+    return jsonify(fetch)
      
 app.run(debug=True)
