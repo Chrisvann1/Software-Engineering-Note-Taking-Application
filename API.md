@@ -53,23 +53,30 @@ The request dictionary keys required for a call to the backend depends on the en
 ```
 Notice that the body sections in this documentation are specifying the keys for this request. 
 ## Responses: A design for response dictionary
-For lists and search (GET) requests there are JSON dictionary responses. Those dictionaries should have the following format.
+For lists and search (GET) requests there are nested list responses. Those nested lists depend on the request you are sending and the endpoint you are sending it to.
 ```
-{
-	"title1" : [
-		"return_field1": "field1_value",
-		"return_field2": "field2_value"
-	],
-	"title2" : [
-		"return_field1": "field1_value",
-		"return_field2": "field2_value"
-	],
-	"title3" : [
-		"return_field1": "field1_value",
-		"return_field2": "field2_value"
-	]
-}
+[
+	["object1_field1_value",
+	"object1_field2_value",
+	"object1_field3_value"],
+	["object2_field1_value",
+	"object2_field2_value",
+	"object2_field3_value"],
+	["object3_field1_value",
+	"object3_field2_value",
+	"object3_field3_value"]
+	...
+]
 ```
+For /notes/search GET methods the specific fields 1, 2, 3 etc. to return are defined by the `result_fields` list in the request body.
+If title is not provided as a `return_fields` value then it is automatically added at the end.
+
+For /tags/search the specific fields are automatically title and tag in that order.
+
+For /notes/list GET methods only one field other than title is allowed to be returned. That field is defined by the `list_field` value in the request body.
+
+For /tags/list the specific fields are automatically title and tag in that order.
+
 ## Feature 4: List notes
 This is an interesting feature which seems vague and confusing. We implement it like this.
 We interpret the `specs.md` file to mean that this feature should list all of the notes.
