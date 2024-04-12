@@ -297,7 +297,7 @@ def runtime(state):
 				printColor("1. By title",getConfig(2),"")
 				printColor("2. By created date",getConfig(2),"")
 				printColor("3. By modified date",getConfig(2),"")
-				printColor("4. List Tags", getConfig(2))
+				printColor("4. List Tags (Coming soon! Not ready yet)", getConfig(2))
 
 
 			case 1410 | 1420 | 1430 | 1440:
@@ -344,15 +344,15 @@ def runtime(state):
 				#	print(chr(gotList.content[i]), end = "")
 	
 		#list tags	
-			case 144:
-				lineBreak(columns, getConfig(4))
-				printColor("Listing note tags...",getConfig(2))
-				lineBreak(columns, getConfig(4))
-				gotList = apiCalls.listTags()
+			#case 144:
+				#lineBreak(columns, getConfig(4))
+				#printColor("Listing note tags...",getConfig(2))
+				#lineBreak(columns, getConfig(4))
+				#gotList = apiCalls.listTags()
 
 				#printing the response
-				entries = translation(gotList.content)
-				print(entries)
+				#entries = translation(gotList.content)
+				#print(entries)
 				#for i in range(0,len(gotList.content)):
 				#	print(chr(gotList.content[i]), end = "")
 
