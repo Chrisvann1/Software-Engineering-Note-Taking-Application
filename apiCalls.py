@@ -39,6 +39,11 @@ def listTags():
 	# Lists tags of all notes
 	pass 
 
+def searchTags(query):
+	#searches tags
+	url = "http://127.0.0.1:5000/tags/search"
+	return requests.get(url,headers=header, json={'query': query})
+
 
 
 # Note creation suite
