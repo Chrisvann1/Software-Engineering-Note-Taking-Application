@@ -222,15 +222,13 @@ def runtime(state):
 				printAppUse()	
 				state = 1
 
-				
-
 	#searchNotes
 			case 13:
-				lineBreak(columns, getConfig(4))
-				printColor("searching for note TEST",getConfig(2))
-				lineBreak(columns, getConfig(4))
-				response = apiCalls.searchNotes('title', 'note1', searchBy)
-				print(response.content)
+				#lineBreak(columns, getConfig(4))
+				#printColor("searching for note TEST",getConfig(2))
+				#lineBreak(columns, getConfig(4))
+				#response = apiCalls.searchNotes('title', 'note1', searchBy)
+				#print(response.content)
 
 
 				lineBreak(columns, getConfig(4))
@@ -252,12 +250,21 @@ def runtime(state):
 
 		#created_date
 			case 132:
-				pass
+				lineBreak(columns, getConfig(4))
+				printColor("Enter date created to search.",getConfig(2))
+				lineBreak(columns, getConfig(4))
+				search_by = userInput(": ")
+				desired_response = ['title','content','modified_date','created_date']
+				api_response = apiCalls.searchNotes('created_date', search_by, desired_response)
 
 		#modified_date
 			case 133:
-				pass
-
+				lineBreak(columns, getConfig(4))
+				printColor("Enter date modified to search.",getConfig(2))
+				lineBreak(columns, getConfig(4))
+				search_by = userInput(": ")
+				desired_response = ['title','content','modified_date','created_date']
+				api_response = apiCalls.searchNotes('modified_date', search_by, desired_response)
 
 	#listNotes
 			case 14:
@@ -391,11 +398,11 @@ def runtime(state):
 				break
 
 		userInput = input(": ")
-		if userInput == ""
-		if (state == 0 and userInput == '0'):
-			state = -1
-		else:
-			state = (state * 10) + int(userInput)
+		if userInput != "":
+			if (state == 0 and userInput == '0'):
+				state = -1
+			else:
+				state = (state * 10) + int(userInput)
 
 # testblock
 runtime(0)
