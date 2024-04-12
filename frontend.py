@@ -132,7 +132,7 @@ def runtime(state):
 				printColor("Would you like to add any tags? (Seperate tags with commas. If none or you wish to add later, enter 'none'.)",getConfig(2),"")
 				newTags = input(": ")
 				newTagList = newTags.split(",")
-				if(True): #newTags == 'none'):
+				if(newTags == 'none'):
 					lineBreak(columns, getConfig(4))
 					printColor("Note Created!",getConfig(2))
 					time.sleep(2)
@@ -140,7 +140,7 @@ def runtime(state):
 					printAppUse()
 					state = 1
 				else:
-					#apiCalls.addTag(newNoteName,newTagList)
+					apiCalls.addTag(newNoteName,newTagList)
 					lineBreak(columns,getConfig(4))
 					printColor("Note Created!", getConfig(2))
 					time.sleep(2)
@@ -230,7 +230,7 @@ def runtime(state):
 				printColor("0. Go back",getConfig(2),"")
 				printColor("1. By title", getConfig(2),"") 
 				printColor("2. By created date",getConfig(2),"") 
-				printColor("3. By modified date",getConfig(2),"") 
+				printColor("3. By modified date",getConfig(2)) 
 
 			case 1310 | 1320 | 1330 | 1340:
 				printAppUse()
@@ -413,7 +413,5 @@ def runtime(state):
 			else:
 				state = (state * 10) + int(userInput)
 
-# testblock
+# Runtime
 runtime(0)
-
-# 143
