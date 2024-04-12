@@ -38,6 +38,25 @@ def lineBreak(columns, color):
 		line += '-'
 	printColor(line, color, "")
 
+def translation(response_string):
+	text = ""
+	inside_quotes = False
+	new_line_check = False
+
+	for num_str in response_string:
+		num = num_str
+        
+		if num == 34:  # ASCII code for double quotation mark (")
+			inside_quotes = not inside_quotes
+		elif inside_quotes:
+			text += chr(num)
+			new_line_check = True
+		elif new_line_check:
+			text += "\n"
+			new_line_check = False
+    
+	return text
+
 # States of operation
 def printStartScreen():
 	columns = shutil.get_terminal_size()[0]
@@ -244,8 +263,9 @@ def runtime(state):
 				search_by = input(": ")
 				desired_response = ['title','content','modified_date','created_date']
 				api_response = apiCalls.searchNotes('title', search_by, desired_response)
-				print(api_response.content)
-
+				entries = translation(api_response.content)
+				print(entries)
+				
 		#created_date
 			case 132:
 				lineBreak(columns, getConfig(4))
@@ -254,7 +274,8 @@ def runtime(state):
 				search_by = input(": ")
 				desired_response = ['title','content','modified_date','created_date']
 				api_response = apiCalls.searchNotes('created_date', search_by, desired_response)
-				print(api_response.content)
+				entries = translation(api_response.content)
+				print(entries)
 
 		#modified_date
 			case 133:
@@ -264,7 +285,8 @@ def runtime(state):
 				search_by = input(": ")
 				desired_response = ['title','content','modified_date','created_date']
 				api_response = apiCalls.searchNotes('modified_date', search_by, desired_response)
-				print(api_response.content)
+				entries = translation(api_response.content)
+				print(entries)
 
 	#listNotes
 			case 14:
@@ -288,10 +310,12 @@ def runtime(state):
 				printColor("Listing notes by title...",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				gotList = apiCalls.listNotes("title")
-
+				
 				#printing the response
-				for i in range(0,len(gotList.content)):
-					print(chr(gotList.content[i]), end = "")
+				entries = translation(gotList.content)
+				print(entries)
+				#for i in range(0,len(gotList.content)):
+				#1	print(gotList.content[i], end = " ")
 
 		#list notes by created date
 			case 142:
@@ -299,10 +323,12 @@ def runtime(state):
 				printColor("Listing notes by created date...",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				gotList = apiCalls.listNotes("created_date")
-
+				
 				#printing the response
-				for i in range(0,len(gotList.content)):
-					print(chr(gotList.content[i]), end = "")
+				entries = translation(gotList.content)
+				print(entries)
+				#for i in range(0,len(gotList.content)):
+				#	print(gotList.content[i], end = " ")
 
 		#list notes by modified date
 			case 143:
@@ -312,8 +338,10 @@ def runtime(state):
 				gotList = apiCalls.listNotes("modified_date")
 
 				#printing the response
-				for i in range(0,len(gotList.content)):
-					print(chr(gotList.content[i]), end = "")
+				entries = translation(gotList.content)
+				print(entries)
+				#for i in range(0,len(gotList.content)):
+				#	print(chr(gotList.content[i]), end = "")
 	
 		#list tags	
 			case 144:
@@ -323,8 +351,10 @@ def runtime(state):
 				gotList = apiCalls.listTags()
 
 				#printing the response
-				for i in range(0,len(gotList.content)):
-					print(chr(gotList.content[i]), end = "")
+				entries = translation(gotList.content)
+				print(entries)
+				#for i in range(0,len(gotList.content)):
+				#	print(chr(gotList.content[i]), end = "")
 
 	#deleteNote
 			case 15:
