@@ -132,7 +132,7 @@ def runtime(state):
 				printColor("Would you like to add any tags? (Seperate tags with commas. If none or you wish to add later, enter 'none'.)",getConfig(2),"")
 				newTags = input(": ")
 				newTagList = newTags.split(",")
-				if(True): #newTags == 'none'):
+				if(newTags == 'none'):
 					lineBreak(columns, getConfig(4))
 					printColor("Note Created!",getConfig(2))
 					time.sleep(2)
@@ -140,7 +140,7 @@ def runtime(state):
 					printAppUse()
 					state = 1
 				else:
-					#apiCalls.addTag(newNoteName,newTagList)
+					apiCalls.addTag(newNoteName,newTagList)
 					lineBreak(columns,getConfig(4))
 					printColor("Note Created!", getConfig(2))
 					time.sleep(2)
@@ -222,42 +222,49 @@ def runtime(state):
 				printAppUse()	
 				state = 1
 
-				
-
 	#searchNotes
 			case 13:
-				lineBreak(columns, getConfig(4))
-				printColor("searching for note TEST",getConfig(2))
-				lineBreak(columns, getConfig(4))
-				#response = apiCalls.searchNotes('title', 'note1', searchBy)
-				print(response.content)
-
-
 				lineBreak(columns, getConfig(4))
 				printColor("What do you want to search by?",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				printColor("0. Go back",getConfig(2),"")
 				printColor("1. By title", getConfig(2),"") 
 				printColor("2. By created date",getConfig(2),"") 
-				printColor("3. By modified date",getConfig(2),"") 
+				printColor("3. By modified date",getConfig(2)) 
+
+			case 1310 | 1320 | 1330 | 1340:
+				printAppUse()
+				state = 1
 
 		#title
 			case 131:
 				lineBreak(columns, getConfig(4))
 				printColor("Enter title to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				search_by = userInput(": ")
+				search_by = input(": ")
 				desired_response = ['title','content','modified_date','created_date']
 				api_response = apiCalls.searchNotes('title', search_by, desired_response)
+				print(api_response.content)
 
 		#created_date
 			case 132:
-				pass
+				lineBreak(columns, getConfig(4))
+				printColor("Enter date created to search.",getConfig(2))
+				lineBreak(columns, getConfig(4))
+				search_by = input(": ")
+				desired_response = ['title','content','modified_date','created_date']
+				api_response = apiCalls.searchNotes('created_date', search_by, desired_response)
+				print(api_response.content)
 
 		#modified_date
 			case 133:
-				pass
-
+				lineBreak(columns, getConfig(4))
+				printColor("Enter date modified to search.",getConfig(2))
+				lineBreak(columns, getConfig(4))
+				search_by = input(": ")
+				desired_response = ['title','content','modified_date','created_date']
+				api_response = apiCalls.searchNotes('modified_date', search_by, desired_response)
+				print(api_response.content)
 
 	#listNotes
 			case 14:
@@ -292,6 +299,7 @@ def runtime(state):
 				printColor("Listing notes by created date...",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				gotList = apiCalls.listNotes("created_date")
+
 				#printing the response
 
 			
@@ -304,6 +312,7 @@ def runtime(state):
 				printColor("Listing notes by modified date...",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				gotList = apiCalls.listNotes("modified_date")
+
 				#printing the response
 				for i in range(0,len(gotList.content)):
 					print(chr(gotList.content[i]), end = "")
@@ -314,9 +323,10 @@ def runtime(state):
 				printColor("Listing note tags...",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				gotList = apiCalls.listTags()
+
 				#printing the response
 				for i in range(0,len(gotList.content)):
-					print(chr(gotList.content[i]),end = "")
+					print(chr(gotList.content[i]), end = "")
 
 	#deleteNote
 			case 15:
@@ -399,13 +409,11 @@ def runtime(state):
 				break
 
 		userInput = input(": ")
-		#if userInput == ""
-		if (state == 0 and userInput == '0'):
-			state = -1
-		else:
-			state = (state * 10) + int(userInput)
+		if userInput != "":
+			if (state == 0 and userInput == '0'):
+				state = -1
+			else:
+				state = (state * 10) + int(userInput)
 
-# testblock
+# Runtime
 runtime(0)
-
-# 143
