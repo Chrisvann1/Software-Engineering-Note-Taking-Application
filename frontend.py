@@ -224,13 +224,6 @@ def runtime(state):
 
 	#searchNotes
 			case 13:
-				#lineBreak(columns, getConfig(4))
-				#printColor("searching for note TEST",getConfig(2))
-				#lineBreak(columns, getConfig(4))
-				#response = apiCalls.searchNotes('title', 'note1', searchBy)
-				#print(response.content)
-
-
 				lineBreak(columns, getConfig(4))
 				printColor("What do you want to search by?",getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -239,32 +232,39 @@ def runtime(state):
 				printColor("2. By created date",getConfig(2),"") 
 				printColor("3. By modified date",getConfig(2),"") 
 
+			case 1310 | 1320 | 1330 | 1340:
+				printAppUse()
+				state = 1
+
 		#title
 			case 131:
 				lineBreak(columns, getConfig(4))
 				printColor("Enter title to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				search_by = userInput(": ")
+				search_by = input(": ")
 				desired_response = ['title','content','modified_date','created_date']
 				api_response = apiCalls.searchNotes('title', search_by, desired_response)
+				print(api_response.content)
 
 		#created_date
 			case 132:
 				lineBreak(columns, getConfig(4))
 				printColor("Enter date created to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				search_by = userInput(": ")
+				search_by = input(": ")
 				desired_response = ['title','content','modified_date','created_date']
 				api_response = apiCalls.searchNotes('created_date', search_by, desired_response)
+				print(api_response.content)
 
 		#modified_date
 			case 133:
 				lineBreak(columns, getConfig(4))
 				printColor("Enter date modified to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				search_by = userInput(": ")
+				search_by = input(": ")
 				desired_response = ['title','content','modified_date','created_date']
 				api_response = apiCalls.searchNotes('modified_date', search_by, desired_response)
+				print(api_response.content)
 
 	#listNotes
 			case 14:
