@@ -301,7 +301,7 @@ def search_tags():
 # Ex: if 'list field' is 'content' we return the content and title of every note.
 # pass HTTP GET request to /notes/list endpoint
 # 'list_field' (optional): string representing note field to list by. always lists by at least title.
-# - supports 'modified_date', 'title', 'created_date', 'content'
+# - supports 'modified_date', 'title', 'created_date'
 
 @app.route('/notes/list', methods=['GET'])
 def list():

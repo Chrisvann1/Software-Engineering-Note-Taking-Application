@@ -95,27 +95,29 @@ def runtime(state):
 		clearConsole()
 		columns = shutil.get_terminal_size()[0]
 		match (state):
-			#Close app
+	#Close app
 			case -1:
 				clearConsole()
 				return
 			
-			# Start page
+	# Start page
 			case 0:
 				printStartScreen()
+
 			case 10 | 20 | 30:
 				printStartScreen()
 				state = 0
 
-			# Application-in-use page
+	# Application-in-use page
 			case 1:
 				printAppUse()
+
 			case 110 | 120 | 130 | 140 | 150:
 				printAppUse()
 				state = 1
 
+	#newNote
 			case 11:
-				#newNote
 				lineBreak(columns, getConfig(4))
 				printColor("Creating note...", getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -124,29 +126,29 @@ def runtime(state):
 				printColor("What content would you like to add to start? (If you wish to add content later, enter 'none'.)", getConfig(2),"")
 				newContent = input(": ")
 				if (newContent == 'none'):
-					pass
-					#apiCalls.createNote(newNoteName,"")
+					apiCalls.createNote(newNoteName,"")
 				else:
-					pass
-					#apiCalls.createNote(newNoteName,newContent)
+					apiCalls.createNote(newNoteName,newContent)
 				printColor("Would you like to add any tags? (Seperate tags with commas. If none or you wish to add later, enter 'none'.)",getConfig(2),"")
 				newTags = input(": ")
 				newTagList = newTags.split(",")
-				if(newTags == 'none'):
+				if(True): #newTags == 'none'):
 					lineBreak(columns, getConfig(4))
 					printColor("Note Created!",getConfig(2))
-					time.sleep(3)
+					time.sleep(2)
+					clearConsole()
 					printAppUse()
 					state = 1
 				else:
 					#apiCalls.addTag(newNoteName,newTagList)
 					lineBreak(columns,getConfig(4))
 					printColor("Note Created!", getConfig(2))
-					time.sleep(3)
+					time.sleep(2)
+					clearConsole()
 					printAppUse()
 					state = 1
 				
-				
+	#editNote
 			case 12:
 				lineBreak(columns, getConfig(4))
 				printColor("Editing a note...",getConfig(2))
@@ -156,7 +158,8 @@ def runtime(state):
 				printColor("2. Edit Content (temporarily not working. Coming in v0.02)",getConfig(2),"")
 				printColor("3. Add tags to note",getConfig(2),"")
 				printColor("4. Delete tags from note", getConfig(2))
-				#editNote
+				
+		#addContent
 			case 121:
 				lineBreak(columns, getConfig(4))
 				printColor("Adding content...",getConfig(2))
@@ -168,20 +171,22 @@ def runtime(state):
 				#apiCalls.addContent(contentName,addContent)
 				lineBreak(columns, getConfig(4))
 				printColor("Added content!",getConfig(2))
-				time.sleep(3)
+				time.sleep(2)
+				clearConsole()
 				printAppUse()
 				state = 1
 				
-				#addContent
+		#editContent limited/cut temporarily for time
 			case 122:
 				lineBreak(columns, getConfig(4))
 				printColor("Coming in v0.02.",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				time.sleep(3)
+				time.sleep(2)
+				clearConsole()
 				printAppUse()
 				state = 1
 
-				#editContent (limited/cut temporarily from time
+		#addTag
 			case 123:
 				lineBreak(columns, getConfig(4))
 				printColor("Adding tag...",getConfig(2),"")
@@ -191,14 +196,15 @@ def runtime(state):
 				printColor("What is the tags that you wish to add? (List with commas inbetween)", getConfig(2),"")
 				addTags = input(": ")
 				tagsList = addTags.split(",")
-				#apiCalls.addTag(addTagName,tagsList)
+				apiCalls.addTag(addTagName,tagsList)
 				lineBreak(columns, getConfig(4))
 				printColor("Added tag(s)!", getConfig(2))
-				time.sleep(3)
+				time.sleep(2)
+				clearConsole()
 				printAppUse()
 				state = 1
 
-				#addTag
+		#deleteTag
 			case 124:
 				lineBreak(columns, getConfig(4))
 				printColor("Deleting tag...",getConfig(2),"")
@@ -211,16 +217,23 @@ def runtime(state):
 				#apiCalls.deletetag(delTagName,delTagsList)
 				lineBreak(columns, getConfig(4))
 				printColor("Deleted tag(s)!",getConfig(2))
-				time.sleep(3)
+				time.sleep(2)
+				clearConsole()
 				printAppUse()	
 				state = 1
 
-				#deleteTag
+				
 
+	#searchNotes
 			case 13:
-				#searchNotes
-				pass
+				lineBreak(columns, getConfig(4))
+				printColor("searching for note TEST",getConfig(2))
+				lineBreak(columns, getConfig(4))
+				searchBy = ['title','content']
+				response = apiCalls.searchNotes('title', 'note1', searchBy)
+				print(response.content)	
 
+	#listNotes
 			case 14:
 				lineBreak(columns, getConfig(4))
 				printColor("Listing notes...",getConfig(2))
@@ -232,60 +245,55 @@ def runtime(state):
 				printColor("4. By modified date",getConfig(2),"")
 				printColor("5. List Tags", getConfig(2))
 
-				#listNotes
+
 			case 1410 | 1420 | 1430 | 1440 | 1450:
 				printAppUse()
 				state = 1
+
+		#list notes by content
 			case 141:
-				
 				lineBreak(columns, getConfig(4))
 				printColor("Listing notes by content...",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				#apiCalls.listNotes("content")
-
+				gotList = apiCalls.listNotes("title")
+				for i in range(0,len(gotList.content)):
+					print(chr(gotList.content[i]), end = "")
 				#printing the response
-	
-				#list notes by content
+
+		#list notes by title
 			case 142:
 				lineBreak(columns, getConfig(4))
 				printColor("Listing notes by title...",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				#apiCalls.listNotes("title")
-	
+				apiCalls.listNotes("title")
 				#printing the response
 
-				#list notes by title
+		#list notes by created date
 			case 143:
 				lineBreak(columns, getConfig(4))
 				printColor("Listing notes by created date...",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				#apiCalls.listNotes("created_date")
-	
+				apiCalls.listNotes("created_date")
 				#printing the response
 
-				#list notes by created date
+		#list notes by modified date
 			case 144:
 				lineBreak(columns, getConfig(4))
 				printColor("Listing notes by modified date...",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				#apiCalls.listNotes("modified_date")
-	
+				apiCalls.listNotes("modified_date")
 				#printing the response
 	
-				#list notes by modified date
+		#list tags	
 			case 145:
 				lineBreak(columns, getConfig(4))
 				printColor("Listing note tags...",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				#apiCalls.listTags()
-	
+				apiCalls.listTags()
 				#printing the response
 
-				#list tags
-				
-
+	#deleteNote
 			case 15:
-				#deleteNote
 				lineBreak(columns, getConfig(4))
 				printColor("Deleting note...", getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -293,17 +301,20 @@ def runtime(state):
 				delNoteName = input(": ")
 				#apiCalls.deleteNote(delNoteName)
 				printColor("Note deleted or it already does not exist", getConfig(2))
-				time.sleep(3)
+				time.sleep(2)
+				clearConsole()
 				printAppUse()
 				state = 1
 
-			# Settings page
+	# Settings page
 			case 2:
 				printSettings()
+			
 			case 210 | 220 | 230:
 				printSettings()
 				state = 2
-			# Change status of pro mode
+		
+		# Change status of pro mode
 			case 21:
 				print("Currently pro mode is " 
 					+ "on" if int(getConfig(6)) == 1 else "off" 
@@ -318,7 +329,7 @@ def runtime(state):
 				printColor("Success, enter 0 to go back", getConfig(2))
 				lineBreak(columns, 15)
 			
-			# Primary color selection
+		# Primary color selection
 			case 22:
 				lineBreak(columns, 15)
 				print("Choose a primary color")
@@ -335,7 +346,7 @@ def runtime(state):
 				printColor("Success, enter 0 to go back", getConfig(2))
 				lineBreak(columns, getConfig(4))
 
-			# Secondary color selection
+		# Secondary color selection
 			case 23:
 				lineBreak(columns, 15)
 				print("Choose a secondary color")
@@ -352,13 +363,14 @@ def runtime(state):
 				printColor("Success, enter 0 to go back", getConfig(2))
 				lineBreak(columns, getConfig(4))
 
-			# General Help page	
+		# General Help page	
 			case 3:
 				printHelpScreen()
-			
+	# Fall through error case
 			case 999:
 				printColor("Invalid state", 9)
 				break
+
 		userInput = input(": ")
 		# temporary
 		if (state == 0 and userInput == '0'):
@@ -370,3 +382,5 @@ def runtime(state):
 
 # testblock
 runtime(0)
+
+# 143

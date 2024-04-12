@@ -72,7 +72,7 @@ def main():
 	# addTag(title, tag)
 
 	r = listNotes(listCo)
-	print(r.content)
+	print(r.content)	
 	
 	searchBy = ['title','content']
 	r = searchNotes('title', 'title1', searchBy)
