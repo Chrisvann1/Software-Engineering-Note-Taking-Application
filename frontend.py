@@ -298,24 +298,33 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("Listing notes by created date...",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				apiCalls.listNotes("created_date")
+				gotList = apiCalls.listNotes("created_date")
+
 				#printing the response
+				for i in range(0,len(gotList.content)):
+					print(chr(gotList.content[i]), end = "")
 
 		#list notes by modified date
 			case 143:
 				lineBreak(columns, getConfig(4))
 				printColor("Listing notes by modified date...",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				apiCalls.listNotes("modified_date")
+				gotList = apiCalls.listNotes("modified_date")
+
 				#printing the response
+				for i in range(0,len(gotList.content)):
+					print(chr(gotList.content[i]), end = "")
 	
 		#list tags	
 			case 144:
 				lineBreak(columns, getConfig(4))
 				printColor("Listing note tags...",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				apiCalls.listTags()
+				gotList = apiCalls.listTags()
+
 				#printing the response
+				for i in range(0,len(gotList.content)):
+					print(chr(gotList.content[i]), end = "")
 
 	#deleteNote
 			case 15:
@@ -324,7 +333,7 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("Enter the name of the note you wish to delete.",getConfig(2),"")
 				delNoteName = input(": ")
-				#apiCalls.deleteNote(delNoteName)
+				apiCalls.deleteNote(delNoteName)
 				printColor("Note deleted or it already does not exist", getConfig(2))
 				time.sleep(2)
 				clearConsole()
