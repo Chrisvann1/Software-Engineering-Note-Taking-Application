@@ -189,6 +189,7 @@ def update_note():
 
 ###SEARCHING FUNCTIONS
 
+#The "return field" needs to be a list"
 # function for all search methods - modified date, tag, created date, etc.
 # pass HTTP GET request to /notes/search endpoint
 # 'search_field' (required): string representing note field to search by. must be exactly one of the following:
@@ -296,15 +297,11 @@ def search_tags():
 
 #{"list_field":"title"}
 ###LISTING FUNCTIONS
-#There are problems here. Currently, the list by modified date and list by created 
-#date just lists all of the titles rather than listing them based on 
-#the chronology of their dates. I am not sure if this is a backend or frontend problem
-#but I thought it would be useful to leave a note here
 # function to list return all notes. only returns the title and 'list_field' of all the notes.
 # Ex: if 'list field' is 'content' we return the content and title of every note.
 # pass HTTP GET request to /notes/list endpoint
 # 'list_field' (optional): string representing note field to list by. always lists by at least title.
-# - supports 'modified_date', 'title', 'created_date', 'content'
+# - supports 'modified_date', 'title', 'created_date'
 
 @app.route('/notes/list', methods=['GET'])
 def list():

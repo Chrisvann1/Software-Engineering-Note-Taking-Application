@@ -1,7 +1,6 @@
 # Specs for the API requests
 This document identifies the current design of the API backend.
 It should serve as a reference for API callers.
-Please do not take the syntax seriously. You may need to implement these calls differently.
 This is a skeletal structure outlining what the API is capable of.
 
 ## Feature 1: Create a note
