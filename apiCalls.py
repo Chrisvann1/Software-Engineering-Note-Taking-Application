@@ -60,7 +60,7 @@ def addContent(noteTitle, noteContent):
 	url = "http://127.0.0.1:5000/notes"
 	return requests.put(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 
-def main():
+def mainTest():
 	listCo = 'title'
 	title = "Btitle1"
 	content = "content1"
@@ -82,6 +82,3 @@ def main():
 	searchBy = ['title','content']
 	r = searchNotes('title', 'title1', searchBy)
 	print(r.content)
-
-
-main()
