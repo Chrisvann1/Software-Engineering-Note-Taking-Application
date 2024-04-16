@@ -29,6 +29,13 @@ def init_db():
         PRIMARY KEY(title,tag)
         FOREIGN KEY(title) REFERENCES notes(title)
     )""")
+    
+    cursor.execute("""CREATE TABLE IF NOT EXISTS images(
+        title TEXT, 
+        image TEXT,
+        PRIMARY KEY(title,image)
+        FOREIGN KEY(title) REFERENCES notes(title)
+    )""")
     conn.close()
  
 # call the above   
@@ -50,7 +57,7 @@ def create_note():
     try: 
         title = payload.get('title')
         if title is None: 
-            raise KeyError("Date Entry Requires A Title")
+            raise KeyError("Data Entry Requires A Title")
     except KeyError as error:
         abort(206, error)
         
@@ -84,14 +91,14 @@ def create_tag():
     try: 
         title = payload.get('title')
         if title is None: 
-            raise KeyError("Date Entry Requires A Title")
+            raise KeyError("Data Entry Requires A Title")
     except KeyError as error:
         abort(206, error)
 
     try: 
         tags = payload.get('tag')
         if tags is None: 
-            raise KeyError("Date Entry Requires a tag")
+            raise KeyError("Data Entry Requires a tag")
     except KeyError as error: 
         abort(206, error)
         
@@ -102,6 +109,31 @@ def create_tag():
     conn.close()
     return "Tag(s) Created Successfully", 200
 
+@app.route('/image', methods=['POST'])
+def add_image(): 
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    payload = request.json
+    try: 
+        title = payload.get('title')
+        if title is None: 
+            raise KeyError("Data Entry Requires A Title")
+    except KeyError as error:
+        abort(206, error)
+
+    try: 
+        images = payload.get('image')
+        if images is None: 
+            raise KeyError("Data Entry Requires an Image")
+    except KeyError as error: 
+        abort(206, error)
+        
+    for value in images: 
+        cursor.execute("INSERT INTO images VALUES (?,?)", (title, value))
+    
+    conn.commit()
+    conn.close()
+    return "Image(s) Added Successfully", 200
 # used to delete notes
 # pass HTTP DELETE request to /notes endpoint
 # payload JSON should have the following fields:
@@ -144,7 +176,7 @@ def delete_tag():
     
     try: 
         tags = payload.get('tag')
-        if tag is None: 
+        if tags is None: 
             raise KeyError("Data Entry Requires a tag")
     except KeyError as error: 
         abort(206, error)
@@ -154,6 +186,32 @@ def delete_tag():
     conn.commit()    
     conn.close()
     return "Tag(s) Deleted Successfully", 200
+
+@app.route('/image', methods=['DELETE'])
+def remove_image(): 
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    payload = request.json
+    try: 
+        title = payload.get('title')
+        if title is None: 
+            raise KeyError("Data Entry Requires a title")
+    except KeyError as error:
+        abort(206, error)
+    
+    try: 
+        images = payload.get('image')
+        if images is None: 
+            raise KeyError("Data Entry Requires an image")
+    except KeyError as error: 
+        abort(206, error)
+        
+    for image in images: 
+        cursor.execute(f"DELETE FROM images WHERE title == '{title}' AND tag == '{image}'")
+    conn.commit()    
+    conn.close()
+    return "Image(s) Deleted Successfully", 200
+
 
 # used to update note content
 # pass HTTP PUT request to /notes endpoint
