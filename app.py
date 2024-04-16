@@ -109,7 +109,7 @@ def create_tag():
     conn.close()
     return "Tag(s) Created Successfully", 200
 
-@app.route('/image', methods=['POST'])
+@app.route('/images', methods=['POST'])
 def add_image(): 
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
@@ -187,7 +187,7 @@ def delete_tag():
     conn.close()
     return "Tag(s) Deleted Successfully", 200
 
-@app.route('/image', methods=['DELETE'])
+@app.route('/images', methods=['DELETE'])
 def remove_image(): 
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
