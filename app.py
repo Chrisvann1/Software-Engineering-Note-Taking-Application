@@ -48,7 +48,7 @@ init_db()
 # make sure you have Content-Type: application/json in the request header
 # payload JSON should have the following fields:
 # 'title' (required): string of note title
-# 'content' (optional): string of note content
+# 'content' (optional): list of strings for content
 @app.route('/notes', methods=['POST'])
 def create_note(): 
     conn = sqlite3.connect("note.db")
@@ -162,6 +162,7 @@ def delete_note():
 # payload JSON should have the following fields:
 # 'title' (required): string of note title
 # 'tag' (required): string of note tag
+# 'content' will be used in list format 
 @app.route('/tags', methods=['DELETE'])
 def delete_tag():
     conn = sqlite3.connect("note.db")
