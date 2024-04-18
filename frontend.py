@@ -143,7 +143,7 @@ def runtime(state):
 				printColor("What would you like to name your new note?",getConfig(2), "")
 				newNoteName = input(": ")
 				printColor("What content would you like to add to start? (If you wish to add content later, enter '*END'.)", getConfig(2),"")
-				printColor("*END: Stop typing to file.",getConfig(2),"")
+				printColor("*END: Stop typing to file. (Needs to be on its own line)",getConfig(2),"")
 				printColor("return key: start a new line.",getConfig(2),"\n")
 				newContent1 = []
 				while True: 

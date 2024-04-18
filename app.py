@@ -48,7 +48,7 @@ init_db()
 # make sure you have Content-Type: application/json in the request header
 # payload JSON should have the following fields:
 # 'title' (required): string of note title
-# 'content' (optional): list of strings for content
+# 'content' (optional): string of note content
 @app.route('/notes', methods=['POST'])
 def create_note(): 
     conn = sqlite3.connect("note.db")
