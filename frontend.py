@@ -2,8 +2,8 @@ import os
 import shutil
 import string
 import time
-
 import apiCalls
+import json 
 
 # Base frontend functionality
 def clearConsole():
@@ -142,12 +142,19 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("What would you like to name your new note?",getConfig(2), "")
 				newNoteName = input(": ")
-				printColor("What content would you like to add to start? (If you wish to add content later, enter 'none'.)", getConfig(2),"")
-				newContent = input(": ")
-				if (newContent == 'none'):
-					apiCalls.createNote(newNoteName,"")
-				else:
-					apiCalls.createNote(newNoteName,newContent)
+				printColor("What content would you like to add to start? (If you wish to add content later, enter '*END'.)", getConfig(2),"")
+				printColor("*END: Stop typing to file. (Needs to be on its own line)",getConfig(2),"")
+				printColor("return key: start a new line.",getConfig(2),"\n")
+				newContent1 = []
+				while True: 
+					notes = input("")
+					if notes == "*END":
+						break
+					newContent1.append(notes)
+				newContent = ""
+				for line in newContent1: 
+					newContent += line + "\n"
+				apiCalls.createNote(newNoteName,newContent)
 				printColor("Would you like to add any tags? (Seperate tags with commas. If none or you wish to add later, enter 'none'.)",getConfig(2),"")
 				newTags = input(": ")
 				newTagList = newTags.split(",")
@@ -186,7 +193,16 @@ def runtime(state):
 				printColor("What is the name of the note you wish to add to?",getConfig(2),"")
 				contentName = input(": ")
 				printColor("Write the content to wish to add.",getConfig(2),"")
-				addContent = input(": ")
+				printColor("*END: Stop typing to file.",getConfig(2),"")
+				printColor("return key: start a new line.",getConfig(2),"")
+				addContent1 = []
+				while True: 
+					notes = input("")
+					if notes == "*END":
+						break
+					addContent1.append(notes)
+				for line in addContent1: 
+					addContent += line + "\n"
 				apiCalls.addContent(contentName,addContent)
 				lineBreak(columns, getConfig(4))
 				printColor("Added content!",getConfig(2))
@@ -264,7 +280,8 @@ def runtime(state):
 				desired_response = ['title','content','modified_date','created_date']
 				api_response = apiCalls.searchNotes('title', search_by, desired_response)
 				entries = translation(api_response.content)
-				print(entries)
+				entries = entries.replace(r'\n', '\n')
+				print (entries)
 				
 		#created_date
 			case 132:
@@ -275,6 +292,7 @@ def runtime(state):
 				desired_response = ['title','content','modified_date','created_date']
 				api_response = apiCalls.searchNotes('created_date', search_by, desired_response)
 				entries = translation(api_response.content)
+				entries = entries.replace(r'\n', '\n')
 				print(entries)
 
 		#modified_date
@@ -286,7 +304,20 @@ def runtime(state):
 				desired_response = ['title','content','modified_date','created_date']
 				api_response = apiCalls.searchNotes('modified_date', search_by, desired_response)
 				entries = translation(api_response.content)
+				entries = entries.replace(r'\n', '\n')
 				print(entries)
+				
+		#search by tag
+			case 134: 
+				lineBreak(columns, getConfig(4))
+               			 printColor("Enter tag to search.", getConfig(2))
+				lineBreak(columns, getConfig(4))
+				search_by = input(": ")
+				desired_response = ['title', 'content', 'modified_date', 'created_date', 'tag']
+                		api_response = apiCalls.searchNotesByTag(search_by, desired_response)
+                		entries = translation(api_response.content)
+                		entries = entries.replace(r'\n', '\n')
+                		print(entries)
 
 	#listNotes
 			case 14:
@@ -426,7 +457,22 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("Success, enter 0 to go back", getConfig(2))
 				lineBreak(columns, getConfig(4))
-
+			 # Rename a tag	
+			case 27:
+				lineBreak(columns, getConfig(4))
+           		        printColor("Renaming a tag...", getConfig(2))
+            			lineBreak(columns, getConfig(4))
+           		        printColor("Enter the current tag name:", getConfig(2))
+         		        old_tag = input(": ")
+				printColor("Enter the new tag name:", getConfig(2))
+				new_tag = input(": ")
+				apiCalls.renameTag(old_tag, new_tag)
+				lineBreak(columns, getConfig(4))
+				printColor("Tag renamed successfully!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printSettings()
+            state = 2
 		# General Help page	
 			case 3:
 				printHelpScreen()
