@@ -55,6 +55,10 @@ def addContent(noteTitle, noteContent):
 	url = "http://127.0.0.1:5000/notes"
 	return requests.put(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 
+def mdDownConversion(noteTitle, noteContent): 
+    url = "http://127.0.0.1:5000/mkdown"
+    return requests.post(url, headers=header, json={'title': noteTitle, 'content': noteContent})
+
 def mainTest():
 	listCo = 'title'
 	title = "title1"

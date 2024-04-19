@@ -79,7 +79,8 @@ def printAppUse():
 	printColor("2. Edit Note(Limited Functionality in v0.01)", getConfig(2),"")
 	printColor("3. Search Notes",getConfig(2),"")
 	printColor("4. List Notes",getConfig(2),"")
-	printColor("5. Delete Note",getConfig(2))
+	printColor("5. Delete Note",getConfig(2),"")
+	printColor("6. Convert Note to MKDown",getConfig(2))
 
 	
 
@@ -399,7 +400,26 @@ def runtime(state):
 				clearConsole()
 				printAppUse()
 				state = 1
-
+	# Convert Notes
+			case 16: 
+				lineBreak(columns, getConfig(4))
+				printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
+				lineBreak(columns,getConfig(4))
+				search_by = input(": ")
+				desired_response = ['content']
+				api_response = apiCalls.searchNotes('title', search_by, desired_response)
+				entries = translation(api_response.content)
+				parsing = entries.split("\n")
+				content = parsing[1].replace(r'\n', '\n')
+				title = parsing[0]
+				if ".mk" not in title: 
+					title = title + ".mk"
+				apiCalls.mdDownConversion(title, content)
+				printColor("Note converted successfully!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1
 	# Settings page
 			case 2:
 				printSettings()
