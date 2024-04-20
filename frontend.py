@@ -344,15 +344,14 @@ def runtime(state):
 				
 		#search by tag
 			case 134: 
-				lineBreak(columns, getConfig(4))
-               			 printColor("Enter tag to search.", getConfig(2))
+				printColor("Enter tag to search.", getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
 				desired_response = ['title', 'content', 'modified_date', 'created_date', 'tag']
-                		api_response = apiCalls.searchNotesByTag(search_by, desired_response)
-                		entries = translation(api_response.content)
-                		entries = entries.replace(r'\n', '\n')
-                		print(entries)
+				api_response = apiCalls.searchNotesByTag(search_by, desired_response)
+				entries = translation(api_response.content)
+				entries = entries.replace(r'\n', '\n')
+				print(entries)
 
 	#listNotes
 			case 14:
@@ -494,11 +493,10 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 			 # Rename a tag	
 			case 27:
+				printColor("Renaming a tag...", getConfig(2))
 				lineBreak(columns, getConfig(4))
-           		        printColor("Renaming a tag...", getConfig(2))
-            			lineBreak(columns, getConfig(4))
-           		        printColor("Enter the current tag name:", getConfig(2))
-         		        old_tag = input(": ")
+				printColor("Enter the current tag name:", getConfig(2))
+				old_tag = input(": ")
 				printColor("Enter the new tag name:", getConfig(2))
 				new_tag = input(": ")
 				apiCalls.renameTag(old_tag, new_tag)
@@ -507,7 +505,7 @@ def runtime(state):
 				time.sleep(2)
 				clearConsole()
 				printSettings()
-            state = 2
+				state = 2
 		# General Help page	
 			case 3:
 				printHelpScreen()
