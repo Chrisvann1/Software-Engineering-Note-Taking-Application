@@ -23,3 +23,4 @@ some way to search
 create directories
 handling data / creating file
 some way to view directory containing notes (some saved path)
+

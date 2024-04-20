@@ -4,6 +4,7 @@ import string
 import time
 import apiCalls
 import json 
+import requests
 
 # Base frontend functionality
 def clearConsole():
@@ -80,6 +81,7 @@ def printAppUse():
 	printColor("3. Search Notes",getConfig(2),"")
 	printColor("4. List Notes",getConfig(2),"")
 	printColor("5. Delete Note",getConfig(2))
+	printColor("6. Export Note to PDF", getConfig(2), "")
 
 	
 
@@ -184,6 +186,39 @@ def runtime(state):
 				printColor("2. Edit Content (temporarily not working. Coming in v0.02)",getConfig(2),"")
 				printColor("3. Add tags to note",getConfig(2),"")
 				printColor("4. Delete tags from note", getConfig(2))
+
+
+
+
+
+			case 16:
+				lineBreak(columns, getConfig(4))
+				printColor("Exporting note to PDF...", getConfig(2))
+				lineBreak(columns,getConfig(4))
+				printColor("Enter the name of the note to want to export.", getConfig(2), "")
+				note_title = input(": ")
+
+				#making API call to export note eto PDF
+
+				url = "http://127.0.0.1:5000/notes/export"
+				header = {'content-type': 'application/json'}
+				response = requests.post(url, headers = header, json={'title': note_title})
+
+				if response.status_code == 200:
+
+					pdf_filename = f"{note_title}.pdf"
+					with open(pdf_filename, 'wb') as file:
+						file.write(response.content)
+				else:
+					printColor("Failed to export note to PDF.", getConfig(2))
+
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1		
+
+
+
 				
 		#addContent
 			case 121:
@@ -489,5 +524,14 @@ def runtime(state):
 			else:
 				state = (state * 10) + int(userInput)
 
+
+		userInput - input(": ")
+		if userInput != "":
+			if state == 0 and userInput == '0':
+				state = -1
+			else:
+				state = (state * 10) + int(userInput)
+
 # Runtime
 runtime(0)
+

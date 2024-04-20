@@ -4,6 +4,7 @@ from flask import request, abort, jsonify
 from datetime import date, date, timedelta, datetime
 
 
+
 app = Flask(__name__)
 
 # called to initialize the SQL databse schema
@@ -412,3 +413,39 @@ def list_tags():
     return jsonify(fetch)
      
 app.run(debug=True)
+
+@app.route('/notes/export', methods=['POST'])
+def export_note_to_pdf():
+    payload = request.json
+    title = payload.get('title')
+    if title is None:
+        abort(400, 'Title is required')
+
+    #retrieve note from the database based on its title
+    conn = sqlite3.connect("note.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM notes WHERE title = ?", (title,))
+    note = cursor.fetchone()
+    conn.close()
+
+    if note is None:
+        abort(404, 'Note not found')
+
+    #generates the PDF using reportLab
+
+    from reportlab.pdfgen import canvas
+
+    pdf_filename - f"{title}.pdf"
+    c = canvas.Canvas(pdf_filename)
+    c.setFont("Helvetica", 12)
+    c.drawString(100, 750, note[0])  # Title
+    c.drawString(100, 700, note[1])  # Content
+
+    c.showPage()
+    c.save()
+
+    return send_file(pdf_filename, as_attachment = True)
+
+
+
+
