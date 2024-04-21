@@ -5,6 +5,7 @@ import time
 import apiCalls
 import json 
 import requests
+import easygui
 
 # Base frontend functionality
 def clearConsole():
@@ -247,10 +248,29 @@ def runtime(state):
 				state = 1
 				
 		#editContent limited/cut temporarily for time
+			
 			case 122:
+				def input_pre_filled(prompt, prefill):
+					#Pass a prompt as if operating a normal input() statement and then a prefill which will fill the text box.
+					assert input == type("String")
+					input = easygui.enterbox(prompt, title="Input", default = prefill)
+					if input is None:
+						input = prefill
+					#returns the input from the user in the form of a string
+					return input
+
 				lineBreak(columns, getConfig(4))
 				printColor("Coming in v0.02.",getConfig(2))
 				lineBreak(columns, getConfig(4))
+				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
+				contentName = input(": ")
+
+				search_response = apiCalls.searchNotes('title', contentName, ['content'])
+				note_content = translation(search_response.content)
+				input_pre_filled("Edit the note", note_content)
+				lineBreak(columns, getConfig(4))
+				printColor("Edits saved",getConfig(2))
+
 				time.sleep(2)
 				clearConsole()
 				printAppUse()

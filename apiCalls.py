@@ -56,7 +56,6 @@ def deleteNote(noteTitle):
 	return requests.delete(url,headers=header, json={'title': noteTitle}) 
 
 def addContent(noteTitle, noteContent):
-	# This should add to an existing note
 	url = "http://127.0.0.1:5000/notes"
 	return requests.put(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 
