@@ -80,7 +80,7 @@ def printAppUse():
 	printColor("3. Search Notes",getConfig(2),"")
 	printColor("4. List Notes",getConfig(2),"")
 	printColor("5. Delete Note",getConfig(2),"")
-	printColor("6. Convert Note to MKDown",getConfig(2))
+	printColor("7. Convert Note to MKDown",getConfig(2))
 
 	
 
