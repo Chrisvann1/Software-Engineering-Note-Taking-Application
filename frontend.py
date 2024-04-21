@@ -400,8 +400,8 @@ def runtime(state):
 				clearConsole()
 				printAppUse()
 				state = 1
-	# Convert Notes
-			case 16: 
+	# Convert Notes To MKDown
+			case 17: 
 				lineBreak(columns, getConfig(4))
 				printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
 				lineBreak(columns,getConfig(4))
@@ -412,8 +412,8 @@ def runtime(state):
 				parsing = entries.split("\n")
 				content = parsing[1].replace(r'\n', '\n')
 				title = parsing[0]
-				if ".mk" not in title: 
-					title = title + ".mk"
+				if ".md" not in title: 
+					title = title + ".md"
 				apiCalls.mdDownConversion(title, content)
 				printColor("Note converted successfully!", getConfig(2))
 				time.sleep(2)
