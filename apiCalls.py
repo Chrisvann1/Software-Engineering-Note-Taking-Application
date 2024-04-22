@@ -17,10 +17,15 @@ def listNotes(listBy):
 	url = "http://127.0.0.1:5000/notes/list"
 	return requests.get(url,headers=header, json={'list_field': listBy})
 
-def searchNotes(field, searchQuery, returnField):
+def searchNotes(field, searchQuery, returnField, start=None, stop=None):
 	#by content, title, tags, date
 	url = "http://127.0.0.1:5000/notes/search"
-	return requests.get(url,headers=header, json={'search_field': field, 'query': searchQuery, 'return_fields': returnField})
+	# conditional check on whether to pass start and stop
+	if field in set('modified_date', 'createNote'):
+		json = {'search_field': field, 'query': searchQuery, 'return_fields': returnField, 'start': start, 'stop': stop}
+	else:
+		json = {'search_field': field, 'query': searchQuery, 'return_fields': returnField}
+	return requests.get(url,headers=header, json=json)
 
 
 
