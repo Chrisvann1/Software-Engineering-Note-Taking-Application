@@ -4,6 +4,7 @@ import string
 import time
 import apiCalls
 import json 
+import requests
 
 # Base frontend functionality
 def clearConsole():
@@ -80,6 +81,7 @@ def printAppUse():
 	printColor("3. Search Notes",getConfig(2),"")
 	printColor("4. List Notes",getConfig(2),"")
 	printColor("5. Delete Note",getConfig(2))
+	printColor("6. Export Note to PDF", getConfig(2), "")
 
 	
 
@@ -184,6 +186,39 @@ def runtime(state):
 				printColor("2. Edit Content (temporarily not working. Coming in v0.02)",getConfig(2),"")
 				printColor("3. Add tags to note",getConfig(2),"")
 				printColor("4. Delete tags from note", getConfig(2))
+
+
+
+
+
+			case 16:
+				lineBreak(columns, getConfig(4))
+				printColor("Exporting note to PDF...", getConfig(2))
+				lineBreak(columns,getConfig(4))
+				printColor("Enter the name of the note to want to export.", getConfig(2), "")
+				note_title = input(": ")
+
+				#making API call to export note eto PDF
+
+				url = "http://127.0.0.1:5000/notes/export"
+				header = {'content-type': 'application/json'}
+				response = requests.post(url, headers = header, json={'title': note_title})
+
+				if response.status_code == 200:
+
+					pdf_filename = f"{note_title}.pdf"
+					with open(pdf_filename, 'wb') as file:
+						file.write(response.content)
+				else:
+					printColor("Failed to export note to PDF.", getConfig(2))
+
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1		
+
+
+
 				
 		#addContent
 			case 121:
@@ -238,6 +273,7 @@ def runtime(state):
 				clearConsole()
 				printAppUse()
 				state = 1
+				
 
 		#deleteTag
 			case 124:
@@ -256,6 +292,25 @@ def runtime(state):
 				clearConsole()
 				printAppUse()	
 				state = 1
+
+		#addImage
+			case 125:
+				lineBreak(columns, getConfig(4))
+				printColor("Adding image...",getConfig(2),"")
+				lineBreak(columns, getConfig(4))
+				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
+				noteTitle = input(": ")
+				printColor("What are the paths to the images you would like to attach? (List with commas between)", getConfig(2),"")
+				imagePathInput = input(": ")
+				imagePaths = imagePathInput.split(",")
+				apiCalls.addImage(noteTitle, imagePaths)
+				lineBreak(columns, getConfig(4))
+				printColor("Added image(s)!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1
+
 
 	#searchNotes
 			case 13:
@@ -309,15 +364,14 @@ def runtime(state):
 				
 		#search by tag
 			case 134: 
-				lineBreak(columns, getConfig(4))
-               			 printColor("Enter tag to search.", getConfig(2))
+				printColor("Enter tag to search.", getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
 				desired_response = ['title', 'content', 'modified_date', 'created_date', 'tag']
-                		api_response = apiCalls.searchNotesByTag(search_by, desired_response)
-                		entries = translation(api_response.content)
-                		entries = entries.replace(r'\n', '\n')
-                		print(entries)
+				api_response = apiCalls.searchNotesByTag(search_by, desired_response)
+				entries = translation(api_response.content)
+				entries = entries.replace(r'\n', '\n')
+				print(entries)
 
 	#listNotes
 			case 14:
@@ -459,11 +513,10 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 			 # Rename a tag	
 			case 27:
+				printColor("Renaming a tag...", getConfig(2))
 				lineBreak(columns, getConfig(4))
-           		        printColor("Renaming a tag...", getConfig(2))
-            			lineBreak(columns, getConfig(4))
-           		        printColor("Enter the current tag name:", getConfig(2))
-         		        old_tag = input(": ")
+				printColor("Enter the current tag name:", getConfig(2))
+				old_tag = input(": ")
 				printColor("Enter the new tag name:", getConfig(2))
 				new_tag = input(": ")
 				apiCalls.renameTag(old_tag, new_tag)
@@ -472,7 +525,7 @@ def runtime(state):
 				time.sleep(2)
 				clearConsole()
 				printSettings()
-            state = 2
+				state = 2
 		# General Help page	
 			case 3:
 				printHelpScreen()
@@ -489,5 +542,14 @@ def runtime(state):
 			else:
 				state = (state * 10) + int(userInput)
 
+
+		userInput - input(": ")
+		if userInput != "":
+			if state == 0 and userInput == '0':
+				state = -1
+			else:
+				state = (state * 10) + int(userInput)
+
 # Runtime
 runtime(0)
+
