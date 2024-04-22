@@ -293,6 +293,7 @@ def runtime(state):
 				clearConsole()
 				printAppUse()
 				state = 1
+				
 
 		#deleteTag
 			case 124:
@@ -311,6 +312,25 @@ def runtime(state):
 				clearConsole()
 				printAppUse()	
 				state = 1
+
+		#addImage
+			case 125:
+				lineBreak(columns, getConfig(4))
+				printColor("Adding image...",getConfig(2),"")
+				lineBreak(columns, getConfig(4))
+				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
+				noteTitle = input(": ")
+				printColor("What are the paths to the images you would like to attach? (List with commas between)", getConfig(2),"")
+				imagePathInput = input(": ")
+				imagePaths = imagePathInput.split(",")
+				apiCalls.addImage(noteTitle, imagePaths)
+				lineBreak(columns, getConfig(4))
+				printColor("Added image(s)!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1
+
 
 	#searchNotes
 			case 13:
