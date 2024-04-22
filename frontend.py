@@ -321,11 +321,15 @@ def runtime(state):
 		#created_date
 			case 132:
 				lineBreak(columns, getConfig(4))
-				printColor("Enter date created to search.",getConfig(2))
+				printColor("Enter the beginning of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				search_by = input(": ")
+				start = input(": ")
+				lineBreak(columns, getConfig(4))
+				printColor("Enter the end of the date range to search by.",getConfig(2))
+				lineBreak(columns, getConfig(4))
+				end = input(": ")
 				desired_response = ['title','content','modified_date','created_date']
-				api_response = apiCalls.searchNotes('created_date', search_by, desired_response)
+				api_response = apiCalls.searchNotes('created_date', "", desired_response, start, end)
 				entries = translation(api_response.content)
 				entries = entries.replace(r'\n', '\n')
 				print(entries)
@@ -333,11 +337,15 @@ def runtime(state):
 		#modified_date
 			case 133:
 				lineBreak(columns, getConfig(4))
-				printColor("Enter date modified to search.",getConfig(2))
+				printColor("Enter the beginning of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				search_by = input(": ")
+				start = input(": ")
+				lineBreak(columns, getConfig(4))
+				printColor("Enter the end of the date range to search by.",getConfig(2))
+				lineBreak(columns, getConfig(4))
+				end = input(": ")
 				desired_response = ['title','content','modified_date','created_date']
-				api_response = apiCalls.searchNotes('modified_date', search_by, desired_response)
+				api_response = apiCalls.searchNotes('modified_date', "", desired_response, start, end)
 				entries = translation(api_response.content)
 				entries = entries.replace(r'\n', '\n')
 				print(entries)
