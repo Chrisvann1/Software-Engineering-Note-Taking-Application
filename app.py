@@ -2,6 +2,8 @@ from flask import Flask
 import sqlite3
 from flask import request, abort, jsonify
 from datetime import date, date, timedelta, datetime
+import os
+import markdown 
 
 
 
@@ -41,6 +43,11 @@ def init_db():
  
 # call the above   
 init_db()
+
+#Creates a subdirectory called MKDown_dir if it does not exist
+def init_markdown():
+    os.makedirs("MKDown_dir", exist_ok=True)
+init_markdown()
 
 ### CREATION AND DELETION FUNCTIONS
 
@@ -411,6 +418,27 @@ def list_tags():
     fetch = cursor.fetchall()
     conn.close()
     return jsonify(fetch)
+
+@app.route('/mkdown', methods=['POST'])
+def markdown_conversion_folder(): 
+    payload = request.json
+    try: 
+        title = payload.get('title')
+        if title is None: 
+            raise KeyError("Data Conversion Requires a title")
+    except KeyError as error:
+        abort(206, error)
+        
+    try: 
+        content = payload.get('content')
+        if content is None: 
+            raise KeyError("Data Conversion Requires content")
+    except KeyError as error: 
+        abort(206, error)
+        
+    with open("./MKDown_dir/" + title, "w") as mk: 
+        mk.write(markdown.markdown(content))
+    
      
 app.run(debug=True)
 
