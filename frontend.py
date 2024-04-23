@@ -79,7 +79,8 @@ def printAppUse():
 	printColor("2. Edit Note(Limited Functionality in v0.01)", getConfig(2),"")
 	printColor("3. Search Notes",getConfig(2),"")
 	printColor("4. List Notes",getConfig(2),"")
-	printColor("5. Delete Note",getConfig(2))
+	printColor("5. Delete Note",getConfig(2),"")
+	printColor("7. Convert Note to MKDown",getConfig(2))
 
 	
 
@@ -306,17 +307,20 @@ def runtime(state):
 				entries = translation(api_response.content)
 				entries = entries.replace(r'\n', '\n')
 				print(entries)
+
 	        #search by tag
 			case 134: 
 				lineBreak(columns, getConfig(4))
-                		printColor("Enter tag to search.", getConfig(2))
-               		        lineBreak(columns, getConfig(4))
-                		search_by = input(": ")
-                		desired_response = ['title', 'content', 'modified_date', 'created_date', 'tag']
-                		api_response = apiCalls.searchNotesByTag(search_by, desired_response)
-                		entries = translation(api_response.content)
-                		entries = entries.replace(r'\n', '\n')
-               		        print(entries)
+        printColor("Enter tag to search.", getConfig(2))
+        lineBreak(columns, getConfig(4))
+        search_by = input(": ")
+        desired_response = ['title', 'content', 'modified_date', 'created_date', 'tag']
+        api_response = apiCalls.searchNotesByTag(search_by, desired_response)
+        entries = translation(api_response.content)
+        entries = entries.replace(r'\n', '\n')
+        print(entries)
+
+
 
 
 	#listNotes
@@ -405,7 +409,26 @@ def runtime(state):
 				clearConsole()
 				printAppUse()
 				state = 1
-
+	# Convert Notes To MKDown
+			case 17: 
+				lineBreak(columns, getConfig(4))
+				printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
+				lineBreak(columns,getConfig(4))
+				search_by = input(": ")
+				desired_response = ['content']
+				api_response = apiCalls.searchNotes('title', search_by, desired_response)
+				entries = translation(api_response.content)
+				parsing = entries.split("\n")
+				content = parsing[1].replace(r'\n', '\n')
+				title = parsing[0]
+				if ".md" not in title: 
+					title = title + ".md"
+				apiCalls.mdDownConversion(title, content)
+				printColor("Note converted successfully!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1
 	# Settings page
 			case 2:
 				printSettings()
@@ -462,7 +485,21 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("Success, enter 0 to go back", getConfig(2))
 				lineBreak(columns, getConfig(4))
-
+			 # Rename a tag	
+			case 27:
+				printColor("Renaming a tag...", getConfig(2))
+				lineBreak(columns, getConfig(4))
+				printColor("Enter the current tag name:", getConfig(2))
+				old_tag = input(": ")
+				printColor("Enter the new tag name:", getConfig(2))
+				new_tag = input(": ")
+				apiCalls.renameTag(old_tag, new_tag)
+				lineBreak(columns, getConfig(4))
+				printColor("Tag renamed successfully!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printSettings()
+				state = 2
 		# General Help page	
 			case 3:
 				printHelpScreen()
