@@ -307,17 +307,21 @@ def runtime(state):
 				entries = translation(api_response.content)
 				entries = entries.replace(r'\n', '\n')
 				print(entries)
-				
-		#search by tag
+
+	        #search by tag
 			case 134: 
-				printColor("Enter tag to search.", getConfig(2))
 				lineBreak(columns, getConfig(4))
-				search_by = input(": ")
-				desired_response = ['title', 'content', 'modified_date', 'created_date', 'tag']
-				api_response = apiCalls.searchNotesByTag(search_by, desired_response)
-				entries = translation(api_response.content)
-				entries = entries.replace(r'\n', '\n')
-				print(entries)
+        printColor("Enter tag to search.", getConfig(2))
+        lineBreak(columns, getConfig(4))
+        search_by = input(": ")
+        desired_response = ['title', 'content', 'modified_date', 'created_date', 'tag']
+        api_response = apiCalls.searchNotesByTag(search_by, desired_response)
+        entries = translation(api_response.content)
+        entries = entries.replace(r'\n', '\n')
+        print(entries)
+
+
+
 
 	#listNotes
 			case 14:
@@ -374,7 +378,8 @@ def runtime(state):
 				#for i in range(0,len(gotList.content)):
 				#	print(chr(gotList.content[i]), end = "")
 	
-		#list tags	
+		#list tags
+		        
 			#case 144:
 				#lineBreak(columns, getConfig(4))
 				#printColor("Listing note tags...",getConfig(2))
@@ -386,6 +391,10 @@ def runtime(state):
 				#print(entries)
 				#for i in range(0,len(gotList.content)):
 				#	print(chr(gotList.content[i]), end = "")
+			case 144:
+				list_tags()
+				printColor("Press 0 to go back", getConfig(2))
+				state = 1	
 
 	#deleteNote
 			case 15:
