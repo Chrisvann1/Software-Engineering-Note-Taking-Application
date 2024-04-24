@@ -66,6 +66,7 @@ def deleteNote(noteTitle):
 	return requests.delete(url,headers=header, json={'title': noteTitle}) 
 
 def addContent(noteTitle, noteContent):
+	# IMPORTANT: This call completely replaces the content of a note. It does not just add content onto the end anymore
 	url = "http://127.0.0.1:5000/notes"
 	return requests.put(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 

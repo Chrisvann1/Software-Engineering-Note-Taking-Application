@@ -78,7 +78,7 @@ def printAppUse():
 	lineBreak(columns, getConfig(4))
 	printColor("0. Go back", getConfig(2),"")
 	printColor("1. New Note", getConfig(2),"")
-	printColor("2. Edit Note(Limited Functionality in v0.01)", getConfig(2),"")
+	printColor("2. Edit Note", getConfig(2),"")
 	printColor("3. Search Notes",getConfig(2),"")
 	printColor("4. List Notes",getConfig(2),"")
 	printColor("5. Delete Note",getConfig(2),"")
@@ -184,7 +184,7 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("0. Go back",getConfig(2),"")
 				printColor("1. Add Content",getConfig(2),"")
-				printColor("2. Edit Content (temporarily not working. Coming in v0.02)",getConfig(2),"")
+				printColor("2. Edit Content",getConfig(2),"")
 				printColor("3. Add tags to note",getConfig(2),"")
 				printColor("4. Delete tags from note", getConfig(2))
 
@@ -247,12 +247,13 @@ def runtime(state):
 				printAppUse()
 				state = 1
 				
-		#editContent limited/cut temporarily for time
+		#editContent
 			
 			case 122:
 				def input_pre_filled(prompt, prefill):
 					#Pass a prompt as if operating a normal input() statement and then a prefill which will fill the text box.
-					assert input == type("String")
+					input = ""
+					# assert input == type("String")
 					input = easygui.enterbox(prompt, title="Input", default = prefill)
 					if input is None:
 						input = prefill
@@ -267,7 +268,8 @@ def runtime(state):
 
 				search_response = apiCalls.searchNotes('title', contentName, ['content'])
 				note_content = translation(search_response.content)
-				input_pre_filled("Edit the note", note_content)
+				newContent = input_pre_filled("Edit the note", note_content)
+				apiCalls.addContent(contentName, newContent)
 				lineBreak(columns, getConfig(4))
 				printColor("Edits saved",getConfig(2))
 
@@ -591,12 +593,12 @@ def runtime(state):
 				state = (state * 10) + int(userInput)
 
 
-		userInput - input(": ")
-		if userInput != "":
-			if state == 0 and userInput == '0':
-				state = -1
-			else:
-				state = (state * 10) + int(userInput)
+		# userInput - input(": ")
+		# if userInput != "":
+		# 	if state == 0 and userInput == '0':
+		# 		state = -1
+		# 	else:
+		# 		state = (state * 10) + int(userInput)
 
 # Runtime
 runtime(0)
