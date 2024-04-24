@@ -81,7 +81,6 @@ def printAppUse():
 	printColor("3. Search Notes",getConfig(2),"")
 	printColor("4. List Notes",getConfig(2),"")
 	printColor("5. Delete Note",getConfig(2))
-	printColor("6. Export Note to PDF", getConfig(2), "")
 
 	
 
@@ -361,9 +360,10 @@ def runtime(state):
 				entries = translation(api_response.content)
 				entries = entries.replace(r'\n', '\n')
 				print(entries)
-				
-		#search by tag
+
+	        #search by tag
 			case 134: 
+				lineBreak(columns, getConfig(4))
 				printColor("Enter tag to search.", getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
@@ -372,6 +372,9 @@ def runtime(state):
 				entries = translation(api_response.content)
 				entries = entries.replace(r'\n', '\n')
 				print(entries)
+
+
+
 
 	#listNotes
 			case 14:
@@ -428,7 +431,8 @@ def runtime(state):
 				#for i in range(0,len(gotList.content)):
 				#	print(chr(gotList.content[i]), end = "")
 	
-		#list tags	
+		#list tags
+		        
 			#case 144:
 				#lineBreak(columns, getConfig(4))
 				#printColor("Listing note tags...",getConfig(2))
@@ -440,6 +444,10 @@ def runtime(state):
 				#print(entries)
 				#for i in range(0,len(gotList.content)):
 				#	print(chr(gotList.content[i]), end = "")
+			case 144:
+				list_tags()
+				printColor("Press 0 to go back", getConfig(2))
+				state = 1	
 
 	#deleteNote
 			case 15:
@@ -454,7 +462,26 @@ def runtime(state):
 				clearConsole()
 				printAppUse()
 				state = 1
-
+	# Convert Notes To MKDown
+			case 17: 
+				lineBreak(columns, getConfig(4))
+				printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
+				lineBreak(columns,getConfig(4))
+				search_by = input(": ")
+				desired_response = ['content']
+				api_response = apiCalls.searchNotes('title', search_by, desired_response)
+				entries = translation(api_response.content)
+				parsing = entries.split("\n")
+				content = parsing[1].replace(r'\n', '\n')
+				title = parsing[0]
+				if ".md" not in title: 
+					title = title + ".md"
+				apiCalls.mdDownConversion(title, content)
+				printColor("Note converted successfully!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1
 	# Settings page
 			case 2:
 				printSettings()
