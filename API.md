@@ -101,6 +101,8 @@ body:
 	`'query'` (required): string representing the string to search for in the 'search_field'
 	`'return_fields'` (required): list of strings representing aspects of the notes you want returned back to you
 		- must be in ('modified_date', 'title', 'created_date', 'tag')
+	`'start'` (option): start date for range to search by date within
+	`'end'` (option): end date for range to search by date within
 
 ## Additional Feature 2: Search by title
 Run this with `'search_field': 'title'`
