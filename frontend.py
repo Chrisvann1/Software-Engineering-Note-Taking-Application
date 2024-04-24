@@ -261,7 +261,8 @@ def runtime(state):
                 printColor("0. Go back",getConfig(2),"")
                 printColor("1. By title", getConfig(2),"") 
                 printColor("2. By created date",getConfig(2),"") 
-                printColor("3. By modified date",getConfig(2)) 
+                printColor("3. By modified date",getConfig(2),"") 
+                printColor("4. By tag", getConfig(2))
 
             case 1310 | 1320 | 1330 | 1340:
                 printAppUse()
