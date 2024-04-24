@@ -21,6 +21,11 @@ def searchNotes(field, searchQuery, returnField):
 	#by content, title, tags, date
 	url = "http://127.0.0.1:5000/notes/search"
 	return requests.get(url,headers=header, json={'search_field': field, 'query': searchQuery, 'return_fields': returnField})
+	
+def searchNotesByTag(tag, returnFields):
+    # Search notes by tag
+    url = "http://127.0.0.1:5000/tags/search"
+    return requests.get(url, headers=header, json={'query': tag, 'return_fields': returnFields})
 
 
 
@@ -38,6 +43,11 @@ def deletetag(noteTitle, tagName):
 def listTags():
 	# Lists tags of all notes
 	pass 
+	
+def renameTag(oldTag, newTag):
+    # Rename a tag
+    url = "http://127.0.0.1:5000/tags/rename"
+    return requests.put(url, headers=header, json={'old_tag': oldTag, 'new_tag': newTag})
 
 def searchTags(query):
 	#searches tags
@@ -58,6 +68,10 @@ def deleteNote(noteTitle):
 def addContent(noteTitle, noteContent):
 	url = "http://127.0.0.1:5000/notes"
 	return requests.put(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
+
+def mdDownConversion(noteTitle, noteContent): 
+    url = "http://127.0.0.1:5000/mkdown"
+    return requests.post(url, headers=header, json={'title': noteTitle, 'content': noteContent})
 
 def mainTest():
 	listCo = 'title'
