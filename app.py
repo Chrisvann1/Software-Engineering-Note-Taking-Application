@@ -91,27 +91,31 @@ def create_note():
 # 'title' (required): string of note title
 # 'tag' (required): string of note tag       
 @app.route('/tags', methods=['POST'])
-def create_tag(): 
+def create_tag():
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
     payload = request.json
-    try: 
-        title = payload.get('title')
-        if title is None: 
-            raise KeyError("Data Entry Requires A Title")
-    except KeyError as error:
-        abort(206, error)
+    title = payload.get('title', '')
+    tags = payload.get('tag', [])
 
-    try: 
-        tags = payload.get('tag')
-        if tags is None: 
-            raise KeyError("Data Entry Requires a tag")
-    except KeyError as error: 
-        abort(206, error)
-        
-    for value in tags: 
-        cursor.execute("INSERT INTO tags VALUES (?,?)", (title, value))
-    
+    if not title:
+        abort(400, 'A title is required')
+
+    if not tags:
+        abort(400, 'At least one tag is required')
+
+    # Checking if the note exists
+    cursor.execute("SELECT 1 FROM notes WHERE title = ?", (title,))
+    if not cursor.fetchone():
+        abort(404, f'Note with title "{title}" does not exist')
+
+    # Checking for existing tags and add only new tags
+    existing_tags = [row[1] for row in cursor.execute("SELECT tag FROM tags WHERE title = ?", (title,))]
+    new_tags = [tag for tag in tags if tag not in existing_tags]
+
+    for tag in new_tags:
+        cursor.execute("INSERT INTO tags VALUES (?, ?)", (title, tag))
+
     conn.commit()
     conn.close()
     return "Tag(s) Created Successfully", 200
@@ -358,6 +362,8 @@ def search_tags():
     fetch = cursor.fetchall()
     conn.close()
     return jsonify(fetch)
+
+
     
     # title
 
