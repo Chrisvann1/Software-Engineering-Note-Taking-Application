@@ -1,4 +1,5 @@
 import requests
+from datetime import date
 
 # Http integration managment
 # generic verion of a http request, formats to request well.
@@ -17,18 +18,24 @@ def listNotes(listBy):
 	url = "http://127.0.0.1:5000/notes/list"
 	return requests.get(url,headers=header, json={'list_field': listBy})
 
-def searchNotes(field, searchQuery, returnField):
+def searchNotes(field, searchQuery, returnField, start='1970-01-01', stop=today.strftime("%Y-%m-%d")):
 	#by content, title, tags, date
 	url = "http://127.0.0.1:5000/notes/search"
-	return requests.get(url,headers=header, json={'search_field': field, 'query': searchQuery, 'return_fields': returnField})
-	
+	# conditional check on whether to pass start and stop
+	if field in set('modified_date', 'created_date'):
+		json = {'search_field': field, 'query': searchQuery, 'return_fields': returnField, 'start': start, 'stop': stop}
+	else:
+		json = {'search_field': field, 'query': searchQuery, 'return_fields': returnField}
+	return requests.get(url,headers=header, json=json)
+
 def searchNotesByTag(tag, returnFields):
     # Search notes by tag
     url = "http://127.0.0.1:5000/tags/search"
     return requests.get(url, headers=header, json={'query': tag, 'return_fields': returnFields})
 
-
-
+  
+  
+  
 # Note Classification Suite
 def addTag(noteTitle, tagName):
 	# Makes a list of tags that should be added to the title, does not need to check if tags exist
