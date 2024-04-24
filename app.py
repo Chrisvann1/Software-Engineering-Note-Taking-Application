@@ -2,6 +2,8 @@ from flask import Flask
 import sqlite3
 from flask import request, abort, jsonify
 from datetime import date, date, timedelta, datetime
+import os
+import markdown 
 
 
 
@@ -41,6 +43,11 @@ def init_db():
  
 # call the above   
 init_db()
+
+#Creates a subdirectory called MKDown_dir if it does not exist
+def init_markdown():
+    os.makedirs("MKDown_dir", exist_ok=True)
+init_markdown()
 
 ### CREATION AND DELETION FUNCTIONS
 
@@ -85,27 +92,31 @@ def create_note():
 # 'title' (required): string of note title
 # 'tag' (required): string of note tag       
 @app.route('/tags', methods=['POST'])
-def create_tag(): 
+def create_tag():
     conn = sqlite3.connect("note.db")
     cursor = conn.cursor()
     payload = request.json
-    try: 
-        title = payload.get('title')
-        if title is None: 
-            raise KeyError("Data Entry Requires A Title")
-    except KeyError as error:
-        abort(206, error)
+    title = payload.get('title', '')
+    tags = payload.get('tag', [])
 
-    try: 
-        tags = payload.get('tag')
-        if tags is None: 
-            raise KeyError("Data Entry Requires a tag")
-    except KeyError as error: 
-        abort(206, error)
-        
-    for value in tags: 
-        cursor.execute("INSERT INTO tags VALUES (?,?)", (title, value))
-    
+    if not title:
+        abort(400, 'A title is required')
+
+    if not tags:
+        abort(400, 'At least one tag is required')
+
+    # Checking if the note exists
+    cursor.execute("SELECT 1 FROM notes WHERE title = ?", (title,))
+    if not cursor.fetchone():
+        abort(404, f'Note with title "{title}" does not exist')
+
+    # Checking for existing tags and add only new tags
+    existing_tags = [row[1] for row in cursor.execute("SELECT tag FROM tags WHERE title = ?", (title,))]
+    new_tags = [tag for tag in tags if tag not in existing_tags]
+
+    for tag in new_tags:
+        cursor.execute("INSERT INTO tags VALUES (?, ?)", (title, tag))
+
     conn.commit()
     conn.close()
     return "Tag(s) Created Successfully", 200
@@ -361,6 +372,8 @@ def search_tags():
     fetch = cursor.fetchall()
     conn.close()
     return jsonify(fetch)
+
+
     
     # title
 
@@ -420,41 +433,26 @@ def list_tags():
     fetch = cursor.fetchall()
     conn.close()
     return jsonify(fetch)
+
+@app.route('/mkdown', methods=['POST'])
+def markdown_conversion_folder(): 
+    payload = request.json
+    try: 
+        title = payload.get('title')
+        if title is None: 
+            raise KeyError("Data Conversion Requires a title")
+    except KeyError as error:
+        abort(206, error)
+        
+    try: 
+        content = payload.get('content')
+        if content is None: 
+            raise KeyError("Data Conversion Requires content")
+    except KeyError as error: 
+        abort(206, error)
+        
+    with open("./MKDown_dir/" + title, "w") as mk: 
+        mk.write(markdown.markdown(content))
+    
      
 app.run(debug=True)
-
-@app.route('/notes/export', methods=['POST'])
-def export_note_to_pdf():
-    payload = request.json
-    title = payload.get('title')
-    if title is None:
-        abort(400, 'Title is required')
-
-    #retrieve note from the database based on its title
-    conn = sqlite3.connect("note.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM notes WHERE title = ?", (title,))
-    note = cursor.fetchone()
-    conn.close()
-
-    if note is None:
-        abort(404, 'Note not found')
-
-    #generates the PDF using reportLab
-
-    from reportlab.pdfgen import canvas
-
-    pdf_filename - f"{title}.pdf"
-    c = canvas.Canvas(pdf_filename)
-    c.setFont("Helvetica", 12)
-    c.drawString(100, 750, note[0])  # Title
-    c.drawString(100, 700, note[1])  # Content
-
-    c.showPage()
-    c.save()
-
-    return send_file(pdf_filename, as_attachment = True)
-
-
-
-

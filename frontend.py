@@ -80,8 +80,8 @@ def printAppUse():
 	printColor("2. Edit Note(Limited Functionality in v0.01)", getConfig(2),"")
 	printColor("3. Search Notes",getConfig(2),"")
 	printColor("4. List Notes",getConfig(2),"")
-	printColor("5. Delete Note",getConfig(2))
-	printColor("6. Export Note to PDF", getConfig(2), "")
+	printColor("5. Delete Note",getConfig(2),"")
+	printColor("7. Convert Note to MKDown",getConfig(2))
 
 	
 
@@ -185,38 +185,7 @@ def runtime(state):
 				printColor("1. Add Content",getConfig(2),"")
 				printColor("2. Edit Content (temporarily not working. Coming in v0.02)",getConfig(2),"")
 				printColor("3. Add tags to note",getConfig(2),"")
-				printColor("4. Delete tags from note", getConfig(2))
-
-
-
-
-
-			case 16:
-				lineBreak(columns, getConfig(4))
-				printColor("Exporting note to PDF...", getConfig(2))
-				lineBreak(columns,getConfig(4))
-				printColor("Enter the name of the note to want to export.", getConfig(2), "")
-				note_title = input(": ")
-
-				#making API call to export note eto PDF
-
-				url = "http://127.0.0.1:5000/notes/export"
-				header = {'content-type': 'application/json'}
-				response = requests.post(url, headers = header, json={'title': note_title})
-
-				if response.status_code == 200:
-
-					pdf_filename = f"{note_title}.pdf"
-					with open(pdf_filename, 'wb') as file:
-						file.write(response.content)
-				else:
-					printColor("Failed to export note to PDF.", getConfig(2))
-
-				time.sleep(2)
-				clearConsole()
-				printAppUse()
-				state = 1		
-
+				printColor("4. Delete tags from note", getConfig(2))	
 
 
 				
@@ -312,11 +281,22 @@ def runtime(state):
 				printColor("Enter title to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
-				desired_response = ['title','content','modified_date','created_date']
+				desired_response = ['title','modified_date','created_date']
 				api_response = apiCalls.searchNotes('title', search_by, desired_response)
 				entries = translation(api_response.content)
-				entries = entries.replace(r'\n', '\n')
-				print (entries)
+				parsing = entries.split("\n")
+				repeats = len(parsing)
+				x = 1
+				while x < repeats:
+					printColor("File Name: ", getConfig(2))
+					print("   " + parsing[x-1])
+					printColor("Created Date: ", getConfig(2))
+					print("   " + parsing[x])
+					printColor("Modified Date: ", getConfig(2))
+					print("   " + parsing[x+1])
+					print("\n")
+					x = x+3
+				
 				
 		#created_date
 			case 132:
@@ -328,11 +308,23 @@ def runtime(state):
 				printColor("Enter the end of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				end = input(": ")
-				desired_response = ['title','content','modified_date','created_date']
+				desired_response = ['title','modified_date','created_date']
 				api_response = apiCalls.searchNotes('created_date', "", desired_response, start, end)
 				entries = translation(api_response.content)
-				entries = entries.replace(r'\n', '\n')
-				print(entries)
+				parsing = entries.split("\n")
+				repeats = len(parsing)
+				x = 1
+				while x < repeats:
+					printColor("File Name: ", getConfig(2))
+					print("   " + parsing[x-1])
+					printColor("Created Date: ", getConfig(2))
+					print("   " + parsing[x])
+					printColor("Modified Date: ", getConfig(2))
+					print("   " + parsing[x+1])
+					print("\n")
+					x = x+3
+
+
 
 		#modified_date
 			case 133:
@@ -344,14 +336,25 @@ def runtime(state):
 				printColor("Enter the end of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				end = input(": ")
-				desired_response = ['title','content','modified_date','created_date']
+				desired_response = ['title','modified_date','created_date']
 				api_response = apiCalls.searchNotes('modified_date', "", desired_response, start, end)
 				entries = translation(api_response.content)
-				entries = entries.replace(r'\n', '\n')
-				print(entries)
+				parsing = entries.split('\n')
+				repeats = len(parsing)
+				x = 1
+				while x < repeats:
+					printColor("File Name: ", getConfig(2))
+					print("   " + parsing[x-1])
+					printColor("Created Date: ", getConfig(2))
+					print("   " + parsing[x])
+					printColor("Modified Date: ", getConfig(2))
+					print("   " + parsing[x+1])
+					print("\n")
+					x = x+3
 				
 		#search by tag
 			case 134: 
+				lineBreak(columns, getConfig(4))
 				printColor("Enter tag to search.", getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
@@ -360,6 +363,9 @@ def runtime(state):
 				entries = translation(api_response.content)
 				entries = entries.replace(r'\n', '\n')
 				print(entries)
+
+
+
 
 	#listNotes
 			case 14:
@@ -416,7 +422,8 @@ def runtime(state):
 				#for i in range(0,len(gotList.content)):
 				#	print(chr(gotList.content[i]), end = "")
 	
-		#list tags	
+		#list tags
+		        
 			#case 144:
 				#lineBreak(columns, getConfig(4))
 				#printColor("Listing note tags...",getConfig(2))
@@ -428,6 +435,10 @@ def runtime(state):
 				#print(entries)
 				#for i in range(0,len(gotList.content)):
 				#	print(chr(gotList.content[i]), end = "")
+			case 144:
+				#list_tags()
+				printColor("Press 0 to go back", getConfig(2))
+				state = 1	
 
 	#deleteNote
 			case 15:
@@ -442,7 +453,26 @@ def runtime(state):
 				clearConsole()
 				printAppUse()
 				state = 1
-
+	# Convert Notes To MKDown
+			case 17: 
+				lineBreak(columns, getConfig(4))
+				printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
+				lineBreak(columns,getConfig(4))
+				search_by = input(": ")
+				desired_response = ['content']
+				api_response = apiCalls.searchNotes('title', search_by, desired_response)
+				entries = translation(api_response.content)
+				parsing = entries.split("\n")
+				content = parsing[1].replace(r'\n', '\n')
+				title = parsing[0]
+				if ".md" not in title: 
+					title = title + ".md"
+				apiCalls.mdDownConversion(title, content)
+				printColor("Note converted successfully!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1
 	# Settings page
 			case 2:
 				printSettings()
@@ -531,12 +561,6 @@ def runtime(state):
 				state = (state * 10) + int(userInput)
 
 
-		userInput - input(": ")
-		if userInput != "":
-			if state == 0 and userInput == '0':
-				state = -1
-			else:
-				state = (state * 10) + int(userInput)
 
 # Runtime
 runtime(0)
