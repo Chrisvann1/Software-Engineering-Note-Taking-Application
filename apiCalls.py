@@ -1,4 +1,5 @@
 import requests
+from datetime import date
 
 # Http integration managment
 # generic verion of a http request, formats to request well.
@@ -17,7 +18,7 @@ def listNotes(listBy):
 	url = "http://127.0.0.1:5000/notes/list"
 	return requests.get(url,headers=header, json={'list_field': listBy})
 
-def searchNotes(field, searchQuery, returnField, start=None, stop=None):
+def searchNotes(field, searchQuery, returnField, start='1970-01-01', stop=today.strftime("%Y-%m-%d")):
 	#by content, title, tags, date
 	url = "http://127.0.0.1:5000/notes/search"
 	# conditional check on whether to pass start and stop
