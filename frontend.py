@@ -4,6 +4,7 @@ import string
 import time
 import apiCalls
 import json 
+import requests
 
 # Base frontend functionality
 def clearConsole():
@@ -184,7 +185,9 @@ def runtime(state):
 				printColor("1. Add Content",getConfig(2),"")
 				printColor("2. Edit Content (temporarily not working. Coming in v0.02)",getConfig(2),"")
 				printColor("3. Add tags to note",getConfig(2),"")
-				printColor("4. Delete tags from note", getConfig(2))
+				printColor("4. Delete tags from note", getConfig(2))	
+
+
 				
 		#addContent
 			case 121:
@@ -278,11 +281,22 @@ def runtime(state):
 				printColor("Enter title to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
-				desired_response = ['title','content','modified_date','created_date']
+				desired_response = ['title','modified_date','created_date']
 				api_response = apiCalls.searchNotes('title', search_by, desired_response)
 				entries = translation(api_response.content)
-				entries = entries.replace(r'\n', '\n')
-				print (entries)
+				parsing = entries.split("\n")
+				repeats = len(parsing)
+				x = 1
+				while x < repeats:
+					printColor("File Name: ", getConfig(2))
+					print("   " + parsing[x-1])
+					printColor("Created Date: ", getConfig(2))
+					print("   " + parsing[x])
+					printColor("Modified Date: ", getConfig(2))
+					print("   " + parsing[x+1])
+					print("\n")
+					x = x+3
+				
 				
 		#created_date
 			case 132:
@@ -290,11 +304,23 @@ def runtime(state):
 				printColor("Enter date created to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
-				desired_response = ['title','content','modified_date','created_date']
+				desired_response = ['title','modified_date','created_date']
 				api_response = apiCalls.searchNotes('created_date', search_by, desired_response)
 				entries = translation(api_response.content)
-				entries = entries.replace(r'\n', '\n')
-				print(entries)
+				parsing = entries.split("\n")
+				repeats = len(parsing)
+				x = 1
+				while x < repeats:
+					printColor("File Name: ", getConfig(2))
+					print("   " + parsing[x-1])
+					printColor("Created Date: ", getConfig(2))
+					print("   " + parsing[x])
+					printColor("Modified Date: ", getConfig(2))
+					print("   " + parsing[x+1])
+					print("\n")
+					x = x+3
+
+
 
 		#modified_date
 			case 133:
@@ -302,23 +328,33 @@ def runtime(state):
 				printColor("Enter date modified to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
-				desired_response = ['title','content','modified_date','created_date']
+				desired_response = ['title','modified_date','created_date']
 				api_response = apiCalls.searchNotes('modified_date', search_by, desired_response)
+				entries = translation(api_response.content)
+				parsing = entries.split('\n')
+				repeats = len(parsing)
+				x = 1
+				while x < repeats:
+					printColor("File Name: ", getConfig(2))
+					print("   " + parsing[x-1])
+					printColor("Created Date: ", getConfig(2))
+					print("   " + parsing[x])
+					printColor("Modified Date: ", getConfig(2))
+					print("   " + parsing[x+1])
+					print("\n")
+					x = x+3
+				
+		#search by tag
+			case 134: 
+				lineBreak(columns, getConfig(4))
+				printColor("Enter tag to search.", getConfig(2))
+				lineBreak(columns, getConfig(4))
+				search_by = input(": ")
+				desired_response = ['title', 'content', 'modified_date', 'created_date', 'tag']
+				api_response = apiCalls.searchNotesByTag(search_by, desired_response)
 				entries = translation(api_response.content)
 				entries = entries.replace(r'\n', '\n')
 				print(entries)
-
-	        #search by tag
-			case 134: 
-				lineBreak(columns, getConfig(4))
-        printColor("Enter tag to search.", getConfig(2))
-        lineBreak(columns, getConfig(4))
-        search_by = input(": ")
-        desired_response = ['title', 'content', 'modified_date', 'created_date', 'tag']
-        api_response = apiCalls.searchNotesByTag(search_by, desired_response)
-        entries = translation(api_response.content)
-        entries = entries.replace(r'\n', '\n')
-        print(entries)
 
 
 
@@ -392,7 +428,7 @@ def runtime(state):
 				#for i in range(0,len(gotList.content)):
 				#	print(chr(gotList.content[i]), end = "")
 			case 144:
-				list_tags()
+				#list_tags()
 				printColor("Press 0 to go back", getConfig(2))
 				state = 1	
 
@@ -516,5 +552,8 @@ def runtime(state):
 			else:
 				state = (state * 10) + int(userInput)
 
+
+
 # Runtime
 runtime(0)
+

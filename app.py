@@ -6,6 +6,7 @@ import os
 import markdown 
 
 
+
 app = Flask(__name__)
 
 # called to initialize the SQL databse schema
