@@ -77,7 +77,7 @@ def printAppUse():
 	lineBreak(columns, getConfig(4))
 	printColor("0. Go back", getConfig(2),"")
 	printColor("1. New Note", getConfig(2),"")
-	printColor("2. Edit Note(Limited Functionality in v0.01)", getConfig(2),"")
+	printColor("2. Edit Note", getConfig(2),"")
 	printColor("3. Search Notes",getConfig(2),"")
 	printColor("4. List Notes",getConfig(2),"")
 	printColor("5. Delete Note",getConfig(2),"")
@@ -100,11 +100,16 @@ def printHelpScreen():
 	columns = shutil.get_terminal_size()[0]
 	lineBreak(columns,getConfig(4))
 	printColor("Help", getConfig(2))
-	printColor("Version: v0.01", getConfig(2))
-	printColor("If this is your first time using appName in a long while, it is recommended to check the github at https://github.com/Chrisvann1/Software-Engineering-Note-Taking-Application/ for updates.", getConfig(2))
+	printColor("Version: v0.02", getConfig(2))
+	printColor("If this is your first time using Noteworthy in a long while, it is recommended to check the github at https://github.com/Chrisvann1/Software-Engineering-Note-Taking-Application/ for updates.", getConfig(2))
 	printColor("Found issues can be reported at the github link.", getConfig(2))
 	printColor("Go to settings on the homepage to change color and to turn off/on Pro mode.", getConfig(2))
 	printColor("Function Help:", getConfig(2))
+	printColor("Date format: YYYY-MM-DD", getConfig(2),"")
+	printColor("Be careful when selecting an option as escaping without running the function is currently not possible.", getConfig(2),"")
+	printColor("Make sure when adding tags you seperate them by commas.", getConfig(2),"")
+
+
 	lineBreak(columns, getConfig(4))
 	printColor("0. Go back", 15)
 
@@ -281,9 +286,10 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
 				delTagName = input(": ")
-				printColor("What is the tags that you wish to delete? (List with commas inbetween)", getConfig(2),"")
+				printColor("What is the tags that you wish to delete? (List with commas and a space inbetween)", getConfig(2),"")
 				delTags = input(": ")
-				delTagsList = delTags.split(",")
+				delTagsList = delTags.split(", ")
+				print(delTagsList[1])
 				apiCalls.deletetag(delTagName,delTagsList)
 				lineBreak(columns, getConfig(4))
 				printColor("Deleted tag(s)!",getConfig(2))
@@ -298,16 +304,45 @@ def runtime(state):
 				printColor("What do you want to search by?",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				printColor("0. Go back",getConfig(2),"")
-				printColor("1. By title", getConfig(2),"") 
-				printColor("2. By created date",getConfig(2),"") 
-				printColor("3. By modified date",getConfig(2)) 
+				printColor("1. View content", getConfig(2),"")
+				printColor("2. By title", getConfig(2),"") 
+				printColor("3. By created date",getConfig(2),"") 
+				printColor("4. By modified date",getConfig(2),"")
+				printColor("5. By tag",getConfig(2)) 
 
 			case 1310 | 1320 | 1330 | 1340:
 				printAppUse()
 				state = 1
 
-		#title
+		#view_content
 			case 131:
+				pass
+				lineBreak(columns, getConfig(4))
+				printColor("Enter title that you wish to view content of.",getConfig(2))
+				lineBreak(columns, getConfig(4))
+				search_by = input(": ")
+				desired_response = ['title','content']
+				api_response = apiCalls.searchNotes('title', search_by, desired_response)
+				entries = translation(api_response.content)
+				parsing = entries.split("\n")
+				test_split = parsing[1].replace(r'\n','\n')
+				repeats = len(test_split)
+				x=1
+				printColor("File Name: ", getConfig(2))
+				print("   " + parsing[x-1])
+				printColor("Content: ", getConfig(2))
+				print("   " + test_split)
+					
+					
+
+				
+
+
+
+
+
+		#title
+			case 132:
 				lineBreak(columns, getConfig(4))
 				printColor("Enter title to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -328,9 +363,8 @@ def runtime(state):
 					print("\n")
 					x = x+3
 				
-				
 		#created_date
-			case 132:
+			case 133:
 				lineBreak(columns, getConfig(4))
 				printColor("Enter date created to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -354,7 +388,7 @@ def runtime(state):
 
 
 		#modified_date
-			case 133:
+			case 134:
 				lineBreak(columns, getConfig(4))
 				printColor("Enter date modified to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -376,16 +410,26 @@ def runtime(state):
 					x = x+3
 				
 		#search by tag
-			case 134: 
+			case 135: 
 				lineBreak(columns, getConfig(4))
 				printColor("Enter tag to search.", getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
-				desired_response = ['title', 'content', 'modified_date', 'created_date', 'tag']
+				desired_response = ['title', 'tag']
 				api_response = apiCalls.searchNotesByTag(search_by, desired_response)
 				entries = translation(api_response.content)
-				entries = entries.replace(r'\n', '\n')
-				print(entries)
+				parsing = entries.split('\n')
+				repeats = len(parsing)
+				x = 1
+				#y = 1
+				while x < repeats:
+					printColor("File Name: ", getConfig(2))
+					print("   " + parsing[x-1])
+					printColor("Note Tag: ", getConfig(2))
+					print("   " + parsing[x])
+					print("\n")
+					x = x+3
+
 
 
 
@@ -415,9 +459,15 @@ def runtime(state):
 				
 				#printing the response
 				entries = translation(gotList.content)
-				print(entries)
-				#for i in range(0,len(gotList.content)):
-				#1	print(gotList.content[i], end = " ")
+				parsing = entries.split('\n')
+				repeats = len(parsing)
+				x = 1
+				while x < repeats:
+					printColor("File Name: ", getConfig(2))
+					print("   " + parsing[x-1])
+					x = x+1
+
+				
 
 		#list notes by created date
 			case 142:
@@ -428,9 +478,17 @@ def runtime(state):
 				
 				#printing the response
 				entries = translation(gotList.content)
-				print(entries)
-				#for i in range(0,len(gotList.content)):
-				#	print(gotList.content[i], end = " ")
+				parsing = entries.split('\n')
+				repeats = len(parsing)
+				x = 1
+				while x < repeats:
+					printColor("File Name: \n", getConfig(2),"")
+					print("   " + parsing[x-1])
+					printColor("Created Date: ", getConfig(2))
+					print("   " + parsing[x])
+					x = x+2
+
+				
 
 		#list notes by modified date
 			case 143:
@@ -441,9 +499,17 @@ def runtime(state):
 
 				#printing the response
 				entries = translation(gotList.content)
-				print(entries)
-				#for i in range(0,len(gotList.content)):
-				#	print(chr(gotList.content[i]), end = "")
+				parsing = entries.split('\n')
+				repeats = len(parsing)
+				x = 1
+				while x < repeats:
+					printColor("File Name: \n", getConfig(2),"")
+					print("   " + parsing[x-1])
+					printColor("Modified Date: ", getConfig(2))
+					print("   " + parsing[x])
+					x = x+2
+
+				
 	
 		#list tags
 		        
