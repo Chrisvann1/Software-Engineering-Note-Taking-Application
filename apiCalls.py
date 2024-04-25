@@ -1,5 +1,5 @@
 import requests
-from datetime import datetime
+from datetime import date
 
 # Http integration managment
 # generic verion of a http request, formats to request well.
