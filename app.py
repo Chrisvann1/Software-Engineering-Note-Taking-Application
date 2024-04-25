@@ -304,15 +304,32 @@ def search_notes():
                     FROM notes 
                     WHERE notes.content == '{query}'
                     """
+
     # modified_date looks like 'YYYY-MM-DD'
     if search_field == 'modified_date':
-        start = datetime.strptime(query, '%Y-%m-%d')
-
+        start_query = payload.get('start')
+        end_query = payload.get('end')
+        start = datetime.strptime(start_query, '%Y-%m-%d')
+        end = datetime.strptime(end_query, '%Y-%m-%d')
         # Construct SQL query
         sql_query = f"""
                      SELECT {select_fields_string} FROM notes 
-                     WHERE created_date == '{start.strftime('%Y-%m-%d')}'
+                     WHERE modified_date >= '{start.strftime('%Y-%m-%d')}' AND modified_date <= '{end.strftime('%Y-%m-%d')}'
                      """
+
+    # created_date looks like 'YYYY-MM-DD'
+    if search_field == 'created_date':
+        start_query = payload.get('start')
+        end_query = payload.get('end')
+        start = datetime.strptime(start_query, '%Y-%m-%d')
+        end = datetime.strptime(end_query, '%Y-%m-%d')
+        start = datetime.strptime(query, '%Y-%m-%d')
+        # Construct SQL query
+        sql_query = f"""
+                     SELECT {select_fields_string} FROM notes 
+                     WHERE created_date >= '{start.strftime('%Y-%m-%d')}' AND created_date <= '{end.strftime('%Y-%m-%d')}
+                     """
+
     # title
     if search_field == 'title':
         sql_query = f"""
@@ -320,14 +337,6 @@ def search_notes():
                    FROM notes
                    WHERE notes.title == '{query}'
                    """
-    # created_date looks like 'YYYY-MM-DD'
-    if search_field == 'created_date':
-        start = datetime.strptime(query, '%Y-%m-%d')
-        # Construct SQL query
-        sql_query = f"""
-                     SELECT {select_fields_string} FROM notes 
-                     WHERE created_date >= '{start.strftime('%Y-%m-%d')}'
-                     """
 
     # tag (super hard ?)
     if search_field == 'tag':
