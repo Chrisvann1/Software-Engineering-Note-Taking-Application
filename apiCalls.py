@@ -18,7 +18,7 @@ def listNotes(listBy):
 	url = "http://127.0.0.1:5000/notes/list"
 	return requests.get(url,headers=header, json={'list_field': listBy})
 
-def searchNotes(field, searchQuery, returnField, start='1970-01-01', stop=datetime.today().strftime("%Y-%m-%d")):
+def searchNotes(field, searchQuery, returnField, start='1970-01-01', stop=date.today().strftime("%Y-%m-%d")):
 	#by content, title, tags, date
 	url = "http://127.0.0.1:5000/notes/search"
 	# conditional check on whether to pass start and stop
@@ -56,6 +56,11 @@ def renameTag(oldTag, newTag):
     url = "http://127.0.0.1:5000/tags/rename"
     return requests.put(url, headers=header, json={'old_tag': oldTag, 'new_tag': newTag})
 
+def searchTags(query):
+	#searches tags
+	url = "http://127.0.0.1:5000/tags/search"
+	return requests.get(url,headers=header, json={'query': query})
+
 
 
 # Note creation suite
@@ -68,7 +73,7 @@ def deleteNote(noteTitle):
 	return requests.delete(url,headers=header, json={'title': noteTitle}) 
 
 def addContent(noteTitle, noteContent):
-	# This should add to an existing note
+	# IMPORTANT: This call completely replaces the content of a note. It does not just add content onto the end anymore
 	url = "http://127.0.0.1:5000/notes"
 	return requests.put(url,headers=header, json={'title': noteTitle, 'content': noteContent}) 
 
@@ -78,14 +83,14 @@ def mdDownConversion(noteTitle, noteContent):
 
 def mainTest():
 	listCo = 'title'
-	title = "title1"
+	title = "Btitle1"
 	content = "content1"
 	mContent = "more content"
 
 	createNote(title,content)
 	addContent(title, mContent)
 
-	title = "title2"
+	title = "Atitle2"
 	content = "content2"
 	createNote(title,content)
 

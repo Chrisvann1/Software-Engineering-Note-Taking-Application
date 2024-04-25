@@ -5,6 +5,7 @@ import time
 import apiCalls
 import json 
 import requests
+import easygui
 
 # Base frontend functionality
 def clearConsole():
@@ -188,7 +189,7 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("0. Go back",getConfig(2),"")
 				printColor("1. Add Content",getConfig(2),"")
-				printColor("2. Edit Content (temporarily not working. Coming in v0.02)",getConfig(2),"")
+				printColor("2. Edit Content",getConfig(2),"")
 				printColor("3. Add tags to note",getConfig(2),"")
 				printColor("4. Delete tags from note", getConfig(2))	
 
@@ -220,11 +221,32 @@ def runtime(state):
 				printAppUse()
 				state = 1
 				
-		#editContent limited/cut temporarily for time
+		#editContent
+			
 			case 122:
+				def input_pre_filled(prompt, prefill):
+					#Pass a prompt as if operating a normal input() statement and then a prefill which will fill the text box.
+					input = ""
+					# assert input == type("String")
+					input = easygui.enterbox(prompt, title="Input", default = prefill)
+					if input is None:
+						input = prefill
+					#returns the input from the user in the form of a string
+					return input
+
 				lineBreak(columns, getConfig(4))
 				printColor("Coming in v0.02.",getConfig(2))
 				lineBreak(columns, getConfig(4))
+				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
+				contentName = input(": ")
+
+				search_response = apiCalls.searchNotes('title', contentName, ['content'])
+				note_content = translation(search_response.content)
+				newContent = input_pre_filled("Edit the note", note_content)
+				apiCalls.addContent(contentName, newContent)
+				lineBreak(columns, getConfig(4))
+				printColor("Edits saved",getConfig(2))
+
 				time.sleep(2)
 				clearConsole()
 				printAppUse()
@@ -247,6 +269,7 @@ def runtime(state):
 				clearConsole()
 				printAppUse()
 				state = 1
+				
 
 		#deleteTag
 			case 124:
@@ -266,6 +289,25 @@ def runtime(state):
 				clearConsole()
 				printAppUse()	
 				state = 1
+
+		#addImage
+			case 125:
+				lineBreak(columns, getConfig(4))
+				printColor("Adding image...",getConfig(2),"")
+				lineBreak(columns, getConfig(4))
+				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
+				noteTitle = input(": ")
+				printColor("What are the paths to the images you would like to attach? (List with commas between)", getConfig(2),"")
+				imagePathInput = input(": ")
+				imagePaths = imagePathInput.split(",")
+				apiCalls.addImage(noteTitle, imagePaths)
+				lineBreak(columns, getConfig(4))
+				printColor("Added image(s)!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1
+
 
 	#searchNotes
 			case 13:
