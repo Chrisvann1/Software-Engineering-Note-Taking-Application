@@ -111,8 +111,8 @@ def create_tag():
         abort(404, f'Note with title "{title}" does not exist')
 
     # Checking for existing tags and add only new tags
-    existing_tags = [row[1] for row in cursor.execute("SELECT tag FROM tags WHERE title = ?", (title,))]
-    new_tags = [tag for tag in tags if tag not in existing_tags]
+    #existing_tags = [row[1] for row in cursor.execute("SELECT tag FROM tags WHERE title = ?", (title,))]
+    new_tags = [tag for tag in tags]
 
     for tag in new_tags:
         cursor.execute("INSERT INTO tags VALUES (?, ?)", (title, tag))
