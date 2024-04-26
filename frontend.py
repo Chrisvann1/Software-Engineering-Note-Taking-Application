@@ -175,7 +175,7 @@ def runtime(state):
 				apiCalls.createNote(newNoteName,newContent)
 				printColor("Would you like to add any tags? (Seperate tags with commas and a space. If none or you wish to add later, enter 'none'.)",getConfig(2),"")
 				newTags = input(": ")
-				newTagList = newTags.split(",")
+				newTagList = newTags.split(", ")
 				if(newTags == 'none'):
 					lineBreak(columns, getConfig(4))
 					printColor("Note Created!",getConfig(2))
