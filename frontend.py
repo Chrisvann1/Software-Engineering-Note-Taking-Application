@@ -124,7 +124,7 @@ def printTagMenu():
     printColor("2. Delete a tag", getConfig(2), "")
     printColor("3. List all tags", getConfig(2), "")
     printColor("4. Search for a tag", getConfig(2), "")
-    printColor("5. Rename a tag", getConfig(2), "")
+    printColor("5. Rename a tag", getConfig(2))
     
 # The runtime funciton, (acts as a main loop)
 def runtime(state):
