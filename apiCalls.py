@@ -22,7 +22,6 @@ def listNotes(listBy):
 def searchNotes(field, searchQuery, returnField, start='1970-01-01', stop=date.today().strftime("%Y-%m-%d")):
 =======
 def searchNotes(field, searchQuery, returnField, start='1970-01-01', stop=datetime.today().strftime("%Y-%m-%d")):
->>>>>>> origin
 	#by content, title, tags, date
 	url = "http://127.0.0.1:5000/notes/search"
 	# conditional check on whether to pass start and stop
