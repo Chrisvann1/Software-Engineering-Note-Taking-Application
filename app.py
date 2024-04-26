@@ -106,7 +106,7 @@ def create_tag():
         abort(400, 'At least one tag is required')
 
     # Checking if the note exists
-    cursor.execute("SELECT 1 title FROM notes WHERE title = ?", (title,))
+    cursor.execute("SELECT 1 FROM notes WHERE title = ?", (title,))
     if not cursor.fetchone():
         abort(404, f'Note with title "{title}" does not exist')
 
