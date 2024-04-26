@@ -173,7 +173,7 @@ def runtime(state):
 				for line in newContent1: 
 					newContent += line + "\n"
 				apiCalls.createNote(newNoteName,newContent)
-				printColor("Would you like to add any tags? (Seperate tags with commas. If none or you wish to add later, enter 'none'.)",getConfig(2),"")
+				printColor("Would you like to add any tags? (Seperate tags with commas and a space. If none or you wish to add later, enter 'none'.)",getConfig(2),"")
 				newTags = input(": ")
 				newTagList = newTags.split(",")
 				if(newTags == 'none'):
@@ -271,7 +271,7 @@ def runtime(state):
 				addTagName = input(": ")
 				printColor("What is the tags that you wish to add? (List with commas inbetween)", getConfig(2),"")
 				addTags = input(": ")
-				tagsList = addTags.split(",")
+				tagsList = addTags.split(", ")
 				apiCalls.addTag(addTagName,tagsList)
 				lineBreak(columns, getConfig(4))
 				printColor("Added tag(s)!", getConfig(2))
@@ -561,9 +561,9 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
 				addTagName = input(": ")
-				printColor("What is the tags that you wish to add? (List with commas inbetween)", getConfig(2),"")
+				printColor("What is the tags that you wish to add? (List with commas and a space inbetween)", getConfig(2),"")
 				addTags = input(": ")
-				tagsList = addTags.split(",")
+				tagsList = addTags.split(", ")
 				apiCalls.addTag(addTagName,tagsList)
 				lineBreak(columns, getConfig(4))
 				printColor("Added tag(s)!", getConfig(2))
