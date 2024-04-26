@@ -149,7 +149,7 @@ def runtime(state):
 			case 1:
 				printAppUse()
 
-			case 110 | 120 | 130 | 140 | 150:
+			case 110 | 120 | 130 | 140 | 150 | 160 | 170:
 				printAppUse()
 				state = 1
 
@@ -291,7 +291,6 @@ def runtime(state):
 				printColor("What is the tags that you wish to delete? (List with commas and a space inbetween)", getConfig(2),"")
 				delTags = input(": ")
 				delTagsList = delTags.split(", ")
-				print(delTagsList[1])
 				apiCalls.deletetag(delTagName,delTagsList)
 				lineBreak(columns, getConfig(4))
 				printColor("Deleted tag(s)!",getConfig(2))
