@@ -63,10 +63,10 @@ def translation(response_string):
 def printStartScreen():
     columns = shutil.get_terminal_size()[0]
     lineBreak(columns, getConfig(4))
-    printColor("Welcome to appName, select what you want to do", getConfig(2), "")
+    printColor("Welcome to NOTEWORTHY, select what you want to do", getConfig(2), "")
     lineBreak(columns, getConfig(4))
     print("\n")
-    printColor("0. Exit APPNAME", 15)
+    printColor("0. Exit NOTEWORTHY", 15)
     printColor("1. Open app", 15)
     printColor("2. Settings", 15)
     printColor("3. Help", 15)
@@ -528,7 +528,8 @@ def runtime(state):
         #list all tags
 			case 144: #Currently not working
 				tags = apiCalls.listTags()
-				printColor("Tags:\n" + "\n".join([f"{tag['title']}: {tag['tag']}" for tag in tags]), getConfig(2))
+				print(tags)
+				#printColor("Tags:\n" + "\n".join([f"{tag['title']}: {tag['tag']}" for tag in tags]), getConfig(2))
 				time.sleep(2)
 				state = 1   
         
@@ -591,7 +592,7 @@ def runtime(state):
 			
 			case 163:
 				tags = apiCalls.listTags()
-				printColor("Tags:\n" + "\n".join([f"{tag['title']}: {tag['tag']}" for tag in tags]), getConfig(2))
+				#printColor("Tags:\n" + "\n".join([f"{tag['title']}: {tag['tag']}" for tag in tags]), getConfig(2))
 				time.sleep(2)
 				state = 1
 
