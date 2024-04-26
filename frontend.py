@@ -1,3 +1,4 @@
+
 import os
 import shutil
 import string
@@ -9,67 +10,66 @@ import easygui
 
 # Base frontend functionality
 def clearConsole():
-	os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def getConfig(line):
-	# Line 2 is Primary color, 4 is Secondary color, 6 is pro mode
-	with open('config.txt', 'r') as file:
-		lines = file.readlines()
-	# Reads the line looked at (non-array indexing)
-	return lines[(line - 1)]
+    # Line 2 is Primary color, 4 is Secondary color, 6 is pro mode
+    with open('config.txt', 'r') as file:
+        lines = file.readlines()
+    # Reads the line looked at (non-array indexing)
+    return lines[(line - 1)]
 
 def setConfig(line, newContent):
-	with open('config.txt', 'r') as file:
-		lines = file.readlines()
-	lines[(line-1)] = str(newContent) + '\n'
-	with open('config.txt', 'w') as file:
-		file.writelines(lines)
+    with open('config.txt', 'r') as file:
+        lines = file.readlines()
+    lines[(line-1)] = str(newContent) + '\n'
+    with open('config.txt', 'w') as file:
+        file.writelines(lines)
 
 def optionColors():
-	for i in range(0,255):
-		print(f"\033[38;5;{str(i)}m{i}\033[0m", end = "\n" if i == 254 else ", "
-)
+    for i in range(0,255):
+        print(f"\033[38;5;{str(i)}m{i}\033[0m", end = "\n" if i == 254 else ", ")
 
 def printColor(text, color, tail = "\n"):
-	color = str(color)
-	print(f"\033[38;5;{color}m{text}\033[0m", end = tail)
+    color = str(color)
+    print(f"\033[38;5;{color}m{text}\033[0m", end = tail)
 
 def lineBreak(columns, color):
-	line = '-'
-	for i in range(1,columns):
-		line += '-'
-	printColor(line, color, "")
+    line = '-'
+    for i in range(1,columns):
+        line += '-'
+    printColor(line, color, "")
 
 def translation(response_string):
-	text = ""
-	inside_quotes = False
-	new_line_check = False
+    text = ""
+    inside_quotes = False
+    new_line_check = False
 
-	for num_str in response_string:
-		num = num_str
+    for num_str in response_string:
+        num = num_str
         
-		if num == 34:  # ASCII code for double quotation mark (")
-			inside_quotes = not inside_quotes
-		elif inside_quotes:
-			text += chr(num)
-			new_line_check = True
-		elif new_line_check:
-			text += "\n"
-			new_line_check = False
+        if num == 34:  # ASCII code for double quotation mark (")
+            inside_quotes = not inside_quotes
+        elif inside_quotes:
+            text += chr(num)
+            new_line_check = True
+        elif new_line_check:
+            text += "\n"
+            new_line_check = False
     
-	return text
+    return text
 
 # States of operation
 def printStartScreen():
-	columns = shutil.get_terminal_size()[0]
-	lineBreak(columns, getConfig(4))
-	printColor("Welcome to appName, select what you want to do", getConfig(2), "")
-	lineBreak(columns, getConfig(4))
-	print("\n")
-	printColor("0. Exit APPNAME", 15)
-	printColor("1. Open app", 15)
-	printColor("2. Settings", 15)
-	printColor("3. Help", 15)
+    columns = shutil.get_terminal_size()[0]
+    lineBreak(columns, getConfig(4))
+    printColor("Welcome to appName, select what you want to do", getConfig(2), "")
+    lineBreak(columns, getConfig(4))
+    print("\n")
+    printColor("0. Exit APPNAME", 15)
+    printColor("1. Open app", 15)
+    printColor("2. Settings", 15)
+    printColor("3. Help", 15)
 
 def printAppUse():
 	columns = shutil.get_terminal_size()[0]
@@ -84,21 +84,20 @@ def printAppUse():
 	printColor("5. Delete Note",getConfig(2),"")
 	printColor("7. Convert Note to MKDown",getConfig(2))
 
-	
 
 def printSettings():
-	columns = shutil.get_terminal_size()[0]
-	lineBreak(columns, getConfig(4))
-	printColor("Settings", 15, "\n")
-	printColor("To edit, enter the number of the feature you wish to edit.", 15)
-	lineBreak(columns, getConfig(4))
-	printColor("0. Go back", 15)
-	printColor("1. Pro mode: " + getConfig(6), 15, "")
-	printColor("2. Change Primary Color (WARNING: Opens a menu)", 15)
-	printColor("3. Change Secondary Color (WARNING: Opens a menu)", 15)
+    columns = shutil.get_terminal_size()[0]
+    lineBreak(columns, getConfig(4))
+    printColor("Settings", 15, "\n")
+    printColor("To edit, enter the number of the feature you wish to edit.", 15)
+    lineBreak(columns, getConfig(4))
+    printColor("0. Go back", 15)
+    printColor("1. Pro mode: " + getConfig(6), 15, "")
+    printColor("2. Change Primary Color (WARNING: Opens a menu)", 15)
+    printColor("3. Change Secondary Color (WARNING: Opens a menu)", 15)
 
 def printHelpScreen():
-	columns = shutil.get_terminal_size()[0]
+columns = shutil.get_terminal_size()[0]
 	lineBreak(columns,getConfig(4))
 	printColor("Help", getConfig(2))
 	printColor("Version: v0.02", getConfig(2))
@@ -113,16 +112,26 @@ def printHelpScreen():
 
 	lineBreak(columns, getConfig(4))
 	printColor("0. Go back", 15)
-
-
-
+  
+def printTagMenu():
+    columns = shutil.get_terminal_size()[0]
+    lineBreak(columns, getConfig(4))
+    printColor("Tag Management", getConfig(2))
+    lineBreak(columns, getConfig(4))
+    printColor("0. Go back", getConfig(2), "")
+    printColor("1. Add a tag", getConfig(2), "")
+    printColor("2. Delete a tag", getConfig(2), "")
+    printColor("3. List all tags", getConfig(2), "")
+    printColor("4. Search for a tag", getConfig(2), "")
+    printColor("5. Rename a tag", getConfig(2), "")
+    
 # The runtime funciton, (acts as a main loop)
 def runtime(state):
-	while(True):
-		clearConsole()
-		columns = shutil.get_terminal_size()[0]
-		match (state):
-	#Close app
+  while(True):
+    clearConsole()
+    columns = shutil.get_terminal_size()[0]
+    match (state):
+  #Close app
 			case -1:
 				clearConsole()
 				return
@@ -427,33 +436,32 @@ def runtime(state):
 					print("   " + parsing[x+1])
 					print("\n")
 					x = x+3
-				
-		#search by tag
-			case 135: 
-				lineBreak(columns, getConfig(4))
-				printColor("Enter tag to search.", getConfig(2))
-				lineBreak(columns, getConfig(4))
-				search_by = input(": ")
-				desired_response = ['title', 'tag']
-				api_response = apiCalls.searchNotesByTag(search_by, desired_response)
-				entries = translation(api_response.content)
-				parsing = entries.split('\n')
-				repeats = len(parsing)
-				x = 1
-				#y = 1
-				while x < repeats:
-					printColor("File Name: ", getConfig(2))
-					print("   " + parsing[x-1])
-					printColor("Note Tag: ", getConfig(2))
-					print("   " + parsing[x])
-					print("\n")
-					x = x+3
 
 
+    
 
+            #search by tag
+       case 135: 
+         lineBreak(columns, getConfig(4))
+				 printColor("Enter tag to search.", getConfig(2))
+				 lineBreak(columns, getConfig(4))
+				 search_by = input(": ")
+				 desired_response = ['title', 'tag']
+				 api_response = apiCalls.searchNotesByTag(search_by, desired_response)
+				 entries = translation(api_response.content)
+				 parsing = entries.split('\n')
+				 repeats = len(parsing)
+				 x = 1
+				 #y = 1
+				 while x < repeats:
+					 printColor("File Name: ", getConfig(2))
+					 print("   " + parsing[x-1])
+					 printColor("Note Tag: ", getConfig(2))
+					 print("   " + parsing[x])
+					 print("\n")
+					 x = x+3
 
-
-	#listNotes
+#listNotes
 			case 14:
 				lineBreak(columns, getConfig(4))
 				printColor("Listing notes...",getConfig(2))
@@ -462,7 +470,7 @@ def runtime(state):
 				printColor("1. By title",getConfig(2),"")
 				printColor("2. By created date",getConfig(2),"")
 				printColor("3. By modified date",getConfig(2),"")
-				printColor("4. List Tags (Coming soon! Not ready yet)", getConfig(2))
+				printColor("4. List Tags", getConfig(2))
 
 
 			case 1410 | 1420 | 1430 | 1440:
@@ -528,27 +536,17 @@ def runtime(state):
 					print("   " + parsing[x])
 					x = x+2
 
-				
-	
-		#list tags
-		        
-			#case 144:
-				#lineBreak(columns, getConfig(4))
-				#printColor("Listing note tags...",getConfig(2))
-				#lineBreak(columns, getConfig(4))
-				#gotList = apiCalls.listTags()
 
-				#printing the response
-				#entries = translation(gotList.content)
-				#print(entries)
-				#for i in range(0,len(gotList.content)):
-				#	print(chr(gotList.content[i]), end = "")
-			case 144:
-				#list_tags()
-				printColor("Press 0 to go back", getConfig(2))
-				state = 1	
-
-	#deleteNote
+    
+        
+       case 144:
+         #list all tags
+         tags = apiCalls.listTags()
+         printColor("Tags:\n" + "\n".join([f"{tag['title']}: {tag['tag']}" for tag in tags]), getConfig(2))
+         time.sleep(2)
+         state = 1   
+        
+#deleteNote
 			case 15:
 				lineBreak(columns, getConfig(4))
 				printColor("Deleting note...", getConfig(2))
@@ -561,27 +559,31 @@ def runtime(state):
 				clearConsole()
 				printAppUse()
 				state = 1
-	# Convert Notes To MKDown
-			case 17: 
-				lineBreak(columns, getConfig(4))
-				printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
-				lineBreak(columns,getConfig(4))
-				search_by = input(": ")
-				desired_response = ['content']
-				api_response = apiCalls.searchNotes('title', search_by, desired_response)
-				entries = translation(api_response.content)
-				parsing = entries.split("\n")
-				content = parsing[1].replace(r'\n', '\n')
-				title = parsing[0]
-				if ".md" not in title: 
-					title = title + ".md"
-				apiCalls.mdDownConversion(title, content)
-				printColor("Note converted successfully!", getConfig(2))
-				time.sleep(2)
-				clearConsole()
-				printAppUse()
-				state = 1
-	# Settings page
+        
+       case 16:
+         printTagMenu()
+          
+    # Convert Notes To MKDown
+            case 17: 
+                lineBreak(columns, getConfig(4))
+                printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
+                lineBreak(columns,getConfig(4))
+                search_by = input(": ")
+                desired_response = ['content']
+                api_response = apiCalls.searchNotes('title', search_by, desired_response)
+                entries = translation(api_response.content)
+                parsing = entries.split("\n")
+                content = parsing[1].replace(r'\n', '\n')
+                title = parsing[0]
+                if ".md" not in title: 
+                    title = title + ".md"
+                apiCalls.mdDownConversion(title, content)
+                printColor("Note converted successfully!", getConfig(2))
+                time.sleep(2)
+                clearConsole()
+                printAppUse()
+                state = 1
+# Settings page
 			case 2:
 				printSettings()
 			
@@ -637,7 +639,8 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("Success, enter 0 to go back", getConfig(2))
 				lineBreak(columns, getConfig(4))
-			 # Rename a tag	
+            
+# Rename a tag	
 			case 27:
 				printColor("Renaming a tag...", getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -668,8 +671,8 @@ def runtime(state):
 			else:
 				state = (state * 10) + int(userInput)
 
-
-
+                
+         
 # Runtime
 runtime(0)
 
