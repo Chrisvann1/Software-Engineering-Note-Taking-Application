@@ -63,10 +63,10 @@ def translation(response_string):
 def printStartScreen():
     columns = shutil.get_terminal_size()[0]
     lineBreak(columns, getConfig(4))
-    printColor("Welcome to appName, select what you want to do", getConfig(2), "")
+    printColor("Welcome to NOTEWORTHY, select what you want to do", getConfig(2), "")
     lineBreak(columns, getConfig(4))
     print("\n")
-    printColor("0. Exit APPNAME", 15)
+    printColor("0. Exit NOTEWORTHY", 15)
     printColor("1. Open app", 15)
     printColor("2. Settings", 15)
     printColor("3. Help", 15)
@@ -82,6 +82,7 @@ def printAppUse():
 	printColor("3. Search Notes",getConfig(2),"")
 	printColor("4. List Notes",getConfig(2),"")
 	printColor("5. Delete Note",getConfig(2),"")
+	printColor("6. Tag Menu", getConfig(2),"")
 	printColor("7. Convert Note to MKDown",getConfig(2))
 
 
@@ -97,7 +98,7 @@ def printSettings():
     printColor("3. Change Secondary Color (WARNING: Opens a menu)", 15)
 
 def printHelpScreen():
-columns = shutil.get_terminal_size()[0]
+	columns = shutil.get_terminal_size()[0]
 	lineBreak(columns,getConfig(4))
 	printColor("Help", getConfig(2))
 	printColor("Version: v0.02", getConfig(2))
@@ -123,20 +124,20 @@ def printTagMenu():
     printColor("2. Delete a tag", getConfig(2), "")
     printColor("3. List all tags", getConfig(2), "")
     printColor("4. Search for a tag", getConfig(2), "")
-    printColor("5. Rename a tag", getConfig(2), "")
+    printColor("5. Rename a tag", getConfig(2))
     
 # The runtime funciton, (acts as a main loop)
 def runtime(state):
-  while(True):
-    clearConsole()
-    columns = shutil.get_terminal_size()[0]
-    match (state):
-  #Close app
+	while(True):
+		clearConsole()
+		columns = shutil.get_terminal_size()[0]
+		match (state):
+		#Close app
 			case -1:
 				clearConsole()
 				return
 			
-	# Start page
+		# Start page
 			case 0:
 				printStartScreen()
 
@@ -144,15 +145,15 @@ def runtime(state):
 				printStartScreen()
 				state = 0
 
-	# Application-in-use page
+		# Application-in-use page
 			case 1:
 				printAppUse()
 
-			case 110 | 120 | 130 | 140 | 150:
+			case 110 | 120 | 130 | 140 | 150 | 160 | 170:
 				printAppUse()
 				state = 1
 
-	#newNote
+		#newNote
 			case 11:
 				lineBreak(columns, getConfig(4))
 				printColor("Creating note...", getConfig(2))
@@ -191,13 +192,13 @@ def runtime(state):
 					printAppUse()
 					state = 1
 				
-	#editNote
+		#editNote
 			case 12:
 				lineBreak(columns, getConfig(4))
 				printColor("Editing a note...",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				printColor("0. Go back",getConfig(2),"")
-				printColor("1. Add Content",getConfig(2),"")
+				printColor("1. New Content",getConfig(2),"")
 				printColor("2. Edit Content",getConfig(2),"")
 				printColor("3. Add tags to note",getConfig(2),"")
 				printColor("4. Delete tags from note", getConfig(2))	
@@ -207,9 +208,9 @@ def runtime(state):
 		#addContent
 			case 121:
 				lineBreak(columns, getConfig(4))
-				printColor("Adding content...",getConfig(2))
+				printColor("Adding new content...",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				printColor("What is the name of the note you wish to add to?",getConfig(2),"")
+				printColor("What is the name of the note you wish to change?",getConfig(2),"")
 				contentName = input(": ")
 				printColor("Write the content to wish to add.",getConfig(2),"")
 				printColor("*END: Stop typing to file.",getConfig(2),"")
@@ -290,7 +291,6 @@ def runtime(state):
 				printColor("What is the tags that you wish to delete? (List with commas and a space inbetween)", getConfig(2),"")
 				delTags = input(": ")
 				delTagsList = delTags.split(", ")
-				print(delTagsList[1])
 				apiCalls.deletetag(delTagName,delTagsList)
 				lineBreak(columns, getConfig(4))
 				printColor("Deleted tag(s)!",getConfig(2))
@@ -330,7 +330,7 @@ def runtime(state):
 				printColor("4. By modified date",getConfig(2),"")
 				printColor("5. By tag",getConfig(2)) 
 
-			case 1310 | 1320 | 1330 | 1340:
+			case 1310 | 1320 | 1330 | 1340 | 1350:
 				printAppUse()
 				state = 1
 
@@ -352,14 +352,6 @@ def runtime(state):
 				print("   " + parsing[x-1])
 				printColor("Content: ", getConfig(2))
 				print("   " + test_split)
-					
-					
-
-				
-
-
-
-
 
 		#title
 			case 132:
@@ -384,7 +376,7 @@ def runtime(state):
 					x = x+3
 				
 		#created_date
-			case 133:
+			case 133: #Currently not working
 				lineBreak(columns, getConfig(4))
 				printColor("Enter the beginning of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -409,10 +401,8 @@ def runtime(state):
 					print("\n")
 					x = x+3
 
-
-
 		#modified_date
-			case 134:
+			case 134: #Currently not working
 				lineBreak(columns, getConfig(4))
 				printColor("Enter the beginning of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -437,31 +427,28 @@ def runtime(state):
 					print("\n")
 					x = x+3
 
+        #search by tag
+			case 135: 
+				lineBreak(columns, getConfig(4))
+				printColor("Enter tag to search.", getConfig(2))
+				lineBreak(columns, getConfig(4))
+				search_by = input(": ")
+				desired_response = ['title', 'tag']
+				api_response = apiCalls.searchNotesByTag(search_by, desired_response)
+				entries = translation(api_response.content)
+				parsing = entries.split('\n')
+				repeats = len(parsing)
+				x = 1
+				#y = 1
+				while x < repeats:
+					printColor("File Name: ", getConfig(2))
+					print("   " + parsing[x-1])
+					printColor("Note Tag: ", getConfig(2))
+					print("   " + parsing[x])
+					print("\n")
+					x = x+2
 
-    
-
-            #search by tag
-       case 135: 
-         lineBreak(columns, getConfig(4))
-				 printColor("Enter tag to search.", getConfig(2))
-				 lineBreak(columns, getConfig(4))
-				 search_by = input(": ")
-				 desired_response = ['title', 'tag']
-				 api_response = apiCalls.searchNotesByTag(search_by, desired_response)
-				 entries = translation(api_response.content)
-				 parsing = entries.split('\n')
-				 repeats = len(parsing)
-				 x = 1
-				 #y = 1
-				 while x < repeats:
-					 printColor("File Name: ", getConfig(2))
-					 print("   " + parsing[x-1])
-					 printColor("Note Tag: ", getConfig(2))
-					 print("   " + parsing[x])
-					 print("\n")
-					 x = x+3
-
-#listNotes
+		#listNotes
 			case 14:
 				lineBreak(columns, getConfig(4))
 				printColor("Listing notes...",getConfig(2))
@@ -538,15 +525,15 @@ def runtime(state):
 
 
     
+        #list all tags
+			case 144: #Currently not working
+				tags = apiCalls.listTags()
+				print(tags)
+				#printColor("Tags:\n" + "\n".join([f"{tag['title']}: {tag['tag']}" for tag in tags]), getConfig(2))
+				time.sleep(2)
+				state = 1   
         
-       case 144:
-         #list all tags
-         tags = apiCalls.listTags()
-         printColor("Tags:\n" + "\n".join([f"{tag['title']}: {tag['tag']}" for tag in tags]), getConfig(2))
-         time.sleep(2)
-         state = 1   
-        
-#deleteNote
+		#deleteNote
 			case 15:
 				lineBreak(columns, getConfig(4))
 				printColor("Deleting note...", getConfig(2))
@@ -560,30 +547,113 @@ def runtime(state):
 				printAppUse()
 				state = 1
         
-       case 16:
-         printTagMenu()
+		#Tag menu stuff
+			case 16: #Unsure if tag menu stuff is working as search and list is not working.
+				printTagMenu()
+
+			case 1640:
+				printAppUse()
+				state = 1
+
+			case 161:
+				lineBreak(columns, getConfig(4))
+				printColor("Adding tag...",getConfig(2),"")
+				lineBreak(columns, getConfig(4))
+				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
+				addTagName = input(": ")
+				printColor("What is the tags that you wish to add? (List with commas inbetween)", getConfig(2),"")
+				addTags = input(": ")
+				tagsList = addTags.split(",")
+				apiCalls.addTag(addTagName,tagsList)
+				lineBreak(columns, getConfig(4))
+				printColor("Added tag(s)!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1
+
+			case 162:
+				lineBreak(columns, getConfig(4))
+				printColor("Deleting tag...",getConfig(2),"")
+				lineBreak(columns, getConfig(4))
+				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
+				delTagName = input(": ")
+				printColor("What is the tags that you wish to delete? (List with commas and a space inbetween)", getConfig(2),"")
+				delTags = input(": ")
+				delTagsList = delTags.split(", ")
+				print(delTagsList[1])
+				apiCalls.deletetag(delTagName,delTagsList)
+				lineBreak(columns, getConfig(4))
+				printColor("Deleted tag(s)!",getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()	
+				state = 1
+			
+			case 163:
+				tags = apiCalls.listTags()
+				#printColor("Tags:\n" + "\n".join([f"{tag['title']}: {tag['tag']}" for tag in tags]), getConfig(2))
+				time.sleep(2)
+				state = 1
+
+			case 164:
+				lineBreak(columns, getConfig(4))
+				printColor("Enter tag to search.", getConfig(2))
+				lineBreak(columns, getConfig(4))
+				search_by = input(": ")
+				desired_response = ['title', 'tag']
+				api_response = apiCalls.searchNotesByTag(search_by, desired_response)
+				entries = translation(api_response.content)
+				parsing = entries.split('\n')
+				repeats = len(parsing)
+				x = 1
+				#y = 1
+				while x < repeats:
+					printColor("File Name: ", getConfig(2))
+					print("   " + parsing[x-1])
+					printColor("Note Tag: ", getConfig(2))
+					print("   " + parsing[x])
+					print("\n")
+					x = x+2
+
+			case 165:
+				printColor("Renaming a tag...", getConfig(2))
+				lineBreak(columns, getConfig(4))
+				printColor("Enter the current tag name:", getConfig(2))
+				old_tag = input(": ")
+				printColor("Enter the new tag name:", getConfig(2))
+				new_tag = input(": ")
+				apiCalls.renameTag(old_tag, new_tag)
+				lineBreak(columns, getConfig(4))
+				printColor("Tag renamed successfully!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1
+
           
-    # Convert Notes To MKDown
-            case 17: 
-                lineBreak(columns, getConfig(4))
-                printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
-                lineBreak(columns,getConfig(4))
-                search_by = input(": ")
-                desired_response = ['content']
-                api_response = apiCalls.searchNotes('title', search_by, desired_response)
-                entries = translation(api_response.content)
-                parsing = entries.split("\n")
-                content = parsing[1].replace(r'\n', '\n')
-                title = parsing[0]
-                if ".md" not in title: 
-                    title = title + ".md"
-                apiCalls.mdDownConversion(title, content)
-                printColor("Note converted successfully!", getConfig(2))
-                time.sleep(2)
-                clearConsole()
-                printAppUse()
-                state = 1
-# Settings page
+    	# Convert Notes To MKDown
+			case 17: #Unsure if working, can writer please tell me if working
+				lineBreak(columns, getConfig(4))
+				printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
+				lineBreak(columns,getConfig(4))
+				search_by = input(": ")
+				desired_response = ['content']
+				api_response = apiCalls.searchNotes('title', search_by, desired_response)
+				entries = translation(api_response.content)
+				parsing = entries.split("\n")
+				content = parsing[1].replace(r'\n', '\n')
+				title = parsing[0]
+				if ".md" not in title: 
+					title = title + ".md"
+				apiCalls.mdDownConversion(title, content)
+				printColor("Note converted successfully!", getConfig(2))
+				time.sleep(2)
+				clearConsole()
+				printAppUse()
+				state = 1
+		
+		# Settings page
 			case 2:
 				printSettings()
 			
@@ -640,21 +710,6 @@ def runtime(state):
 				printColor("Success, enter 0 to go back", getConfig(2))
 				lineBreak(columns, getConfig(4))
             
-# Rename a tag	
-			case 27:
-				printColor("Renaming a tag...", getConfig(2))
-				lineBreak(columns, getConfig(4))
-				printColor("Enter the current tag name:", getConfig(2))
-				old_tag = input(": ")
-				printColor("Enter the new tag name:", getConfig(2))
-				new_tag = input(": ")
-				apiCalls.renameTag(old_tag, new_tag)
-				lineBreak(columns, getConfig(4))
-				printColor("Tag renamed successfully!", getConfig(2))
-				time.sleep(2)
-				clearConsole()
-				printSettings()
-				state = 2
 		# General Help page	
 			case 3:
 				printHelpScreen()
