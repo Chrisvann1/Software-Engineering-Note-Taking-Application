@@ -428,7 +428,7 @@ def runtime(state):
 					x = x+3
 
         #search by tag
-			case 135: #Currently not working
+			case 135: 
 				lineBreak(columns, getConfig(4))
 				printColor("Enter tag to search.", getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -446,7 +446,7 @@ def runtime(state):
 					printColor("Note Tag: ", getConfig(2))
 					print("   " + parsing[x])
 					print("\n")
-					x = x+3
+					x = x+2
 
 		#listNotes
 			case 14:
@@ -614,7 +614,7 @@ def runtime(state):
 					printColor("Note Tag: ", getConfig(2))
 					print("   " + parsing[x])
 					print("\n")
-					x = x+3
+					x = x+2
 
 			case 165:
 				printColor("Renaming a tag...", getConfig(2))
