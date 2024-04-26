@@ -269,7 +269,7 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
 				addTagName = input(": ")
-				printColor("What is the tags that you wish to add? (List with commas inbetween)", getConfig(2),"")
+				printColor("What is the tags that you wish to add? (List with commas and a space inbetween)", getConfig(2),"")
 				addTags = input(": ")
 				tagsList = addTags.split(", ")
 				apiCalls.addTag(addTagName,tagsList)
