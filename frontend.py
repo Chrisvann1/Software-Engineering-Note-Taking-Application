@@ -198,7 +198,7 @@ def runtime(state):
 				printColor("Editing a note...",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				printColor("0. Go back",getConfig(2),"")
-				printColor("1. Add Content",getConfig(2),"")
+				printColor("1. New Content",getConfig(2),"")
 				printColor("2. Edit Content",getConfig(2),"")
 				printColor("3. Add tags to note",getConfig(2),"")
 				printColor("4. Delete tags from note", getConfig(2))	
@@ -208,9 +208,9 @@ def runtime(state):
 		#addContent
 			case 121:
 				lineBreak(columns, getConfig(4))
-				printColor("Adding content...",getConfig(2))
+				printColor("Adding new content...",getConfig(2))
 				lineBreak(columns, getConfig(4))
-				printColor("What is the name of the note you wish to add to?",getConfig(2),"")
+				printColor("What is the name of the note you wish to change?",getConfig(2),"")
 				contentName = input(": ")
 				printColor("Write the content to wish to add.",getConfig(2),"")
 				printColor("*END: Stop typing to file.",getConfig(2),"")
@@ -330,7 +330,7 @@ def runtime(state):
 				printColor("4. By modified date",getConfig(2),"")
 				printColor("5. By tag",getConfig(2)) 
 
-			case 1310 | 1320 | 1330 | 1340:
+			case 1310 | 1320 | 1330 | 1340 | 1350:
 				printAppUse()
 				state = 1
 
@@ -376,7 +376,7 @@ def runtime(state):
 					x = x+3
 				
 		#created_date
-			case 133:
+			case 133: #Currently not working
 				lineBreak(columns, getConfig(4))
 				printColor("Enter the beginning of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -402,7 +402,7 @@ def runtime(state):
 					x = x+3
 
 		#modified_date
-			case 134:
+			case 134: #Currently not working
 				lineBreak(columns, getConfig(4))
 				printColor("Enter the beginning of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -428,7 +428,7 @@ def runtime(state):
 					x = x+3
 
         #search by tag
-			case 135: 
+			case 135: #Currently not working
 				lineBreak(columns, getConfig(4))
 				printColor("Enter tag to search.", getConfig(2))
 				lineBreak(columns, getConfig(4))
@@ -526,7 +526,7 @@ def runtime(state):
 
     
         #list all tags
-			case 144:
+			case 144: #Currently not working
 				tags = apiCalls.listTags()
 				printColor("Tags:\n" + "\n".join([f"{tag['title']}: {tag['tag']}" for tag in tags]), getConfig(2))
 				time.sleep(2)
@@ -546,8 +546,13 @@ def runtime(state):
 				printAppUse()
 				state = 1
         
-			case 16:
+		#Tag menu stuff
+			case 16: #Unsure if tag menu stuff is working as search and list is not working.
 				printTagMenu()
+
+			case 1640:
+				printAppUse()
+				state = 1
 
 			case 161:
 				lineBreak(columns, getConfig(4))
@@ -627,7 +632,7 @@ def runtime(state):
 
           
     	# Convert Notes To MKDown
-			case 17:
+			case 17: #Unsure if working, can writer please tell me if working
 				lineBreak(columns, getConfig(4))
 				printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
 				lineBreak(columns,getConfig(4))
