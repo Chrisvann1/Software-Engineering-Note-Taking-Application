@@ -192,6 +192,7 @@ def runtime(state):
 					printAppUse()
 					state = 1
 				
+				
 		#editNote
 			case 12:
 				lineBreak(columns, getConfig(4))
@@ -280,7 +281,6 @@ def runtime(state):
 				printAppUse()
 				state = 1
 				
-
 		#deleteTag
 			case 124:
 				lineBreak(columns, getConfig(4))
