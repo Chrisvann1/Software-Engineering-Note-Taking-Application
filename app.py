@@ -307,8 +307,21 @@ def search_notes():
 
     # modified_date looks like 'YYYY-MM-DD'
     if search_field == 'modified_date':
-        start_query = payload.get('start')
-        end_query = payload.get('end')
+        # defaults
+        try: 
+            start_query = payload.get('start')
+            if start_query is None: 
+                start_query = '1970-01-01'
+        except KeyError as error:
+            start_query = '1970-01-01'
+        
+        try: 
+            end_query = payload.get('start')
+            if end_query is None: 
+                end_query = datetime.date.today().strftime('%Y-%m-%d')
+        except KeyError as error:
+            end_query = datetime.date.today().strftime('%Y-%m-%d')
+        
         start = datetime.strptime(start_query, '%Y-%m-%d')
         end = datetime.strptime(end_query, '%Y-%m-%d')
         # Construct SQL query
@@ -319,8 +332,21 @@ def search_notes():
 
     # created_date looks like 'YYYY-MM-DD'
     if search_field == 'created_date':
-        start_query = payload.get('start')
-        end_query = payload.get('end')
+        # defaults
+        try: 
+            start_query = payload.get('start')
+            if start_query is None: 
+                start_query = '1970-01-01'
+        except KeyError as error:
+            start_query = '1970-01-01'
+        
+        try: 
+            end_query = payload.get('start')
+            if end_query is None: 
+                end_query = datetime.date.today().strftime('%Y-%m-%d')
+        except KeyError as error:
+            end_query = datetime.date.today().strftime('%Y-%m-%d')
+        
         start = datetime.strptime(start_query, '%Y-%m-%d')
         end = datetime.strptime(end_query, '%Y-%m-%d')
         start = datetime.strptime(query, '%Y-%m-%d')
