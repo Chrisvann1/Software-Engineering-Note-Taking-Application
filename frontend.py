@@ -236,6 +236,7 @@ def runtime(state):
 				printColor("*END: Stop typing to file.",getConfig(2),"")
 				printColor("return key: start a new line.",getConfig(2),"")
 				addContent1 = []
+				addContent = ""
 				while True: 
 					notes = input("")
 					if notes == "*END":
