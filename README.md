@@ -8,7 +8,7 @@ Noteworthy is an application that will store notes in a searchable and listable 
 
 ## What you'll need
 
-Noteworthy requires Python version 3.10 or later, and uses the following [extensions]:
+Noteworthy requires Python version 3.10 or later, and uses the following modules:
 
 * string
 * requests
@@ -21,7 +21,15 @@ Noteworthy requires Python version 3.10 or later, and uses the following [extens
 
 ### Installation
 
-First, download all the project files and store them in a directory of your choice. You will run two Python files: frontend.py, which runs the menus and user inputs, and app.py, which runs the API and puts your inputs into the database. In the future (not really, lol) we will make the API run seperately so users only have to run one file, but for now you'll have to run them both locally.
+First, download all the project files and store them in a directory of your choice. You will run two Python files in seperate terminals: frontend.py, which runs the menus and user inputs, and app.py, which runs the API and puts your inputs into the database. In the future we will make the API run seperately so users only have to run the frontend file, but for now you'll have to run them both locally.
+
+Navigate in your terminals to the directory the project files are located and run these two commands to use the program:
+```
+python ./app.py
+```
+```
+python ./frontend.py
+```
 
 ### Navigation
 
