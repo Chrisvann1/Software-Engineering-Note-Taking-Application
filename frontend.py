@@ -59,6 +59,16 @@ def translation(response_string):
     
     return text
 
+def input_pre_filled(prompt, prefill):
+	#Pass a prompt as if operating a normal input() statement and then a prefill which will fill the text box.
+	input = ""
+	# assert input == type("String")
+	input = easygui.enterbox(prompt, title="Input", default = prefill)
+	if input is None:
+		input = prefill
+		#returns the input from the user in the form of a string
+		return input
+
 # States of operation
 def printStartScreen():
     columns = shutil.get_terminal_size()[0]
@@ -160,6 +170,9 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("What would you like to name your new note?",getConfig(2), "")
 				newNoteName = input(": ")
+				while newNoteName == "":
+					printColor("The notes name cannot be empty. Please input a name.")
+					newNoteName = input(": ")
 				printColor("What content would you like to add to start? (If you wish to add content later, enter '*END'.)", getConfig(2),"")
 				printColor("*END: Stop typing to file. (Needs to be on its own line)",getConfig(2),"")
 				printColor("return key: start a new line.",getConfig(2),"\n")
@@ -175,6 +188,9 @@ def runtime(state):
 				apiCalls.createNote(newNoteName,newContent)
 				printColor("Would you like to add any tags? (Seperate tags with commas and a space. If none or you wish to add later, enter 'none'.)",getConfig(2),"")
 				newTags = input(": ")
+				while newTags != 'none' and not all(tag.strip() for tag in newTags.split(',')):
+   					printColor("Tags should be separated by commas and a space. Please enter tags in the correct format.", getConfig(2))
+   					newTags = input(": ")
 				newTagList = newTags.split(", ")
 				if(newTags == 'none'):
 					lineBreak(columns, getConfig(4))
@@ -213,6 +229,9 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("What is the name of the note you wish to change?",getConfig(2),"")
 				contentName = input(": ")
+				while contentName == "":
+					printColor("The note name cannot be empty. Please input a valid name.",getConfig(2))
+					contentName = input(": ")
 				printColor("Write the content to wish to add.",getConfig(2),"")
 				printColor("*END: Stop typing to file.",getConfig(2),"")
 				printColor("return key: start a new line.",getConfig(2),"")
@@ -235,21 +254,14 @@ def runtime(state):
 		#editContent
 			
 			case 122:
-				def input_pre_filled(prompt, prefill):
-					#Pass a prompt as if operating a normal input() statement and then a prefill which will fill the text box.
-					input = ""
-					# assert input == type("String")
-					input = easygui.enterbox(prompt, title="Input", default = prefill)
-					if input is None:
-						input = prefill
-					#returns the input from the user in the form of a string
-					return input
-
 				lineBreak(columns, getConfig(4))
 				printColor("Coming in v0.02.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
 				contentName = input(": ")
+				while contentName == "":
+					printColor("The note name cannot be empty. Please input a valid name.")
+					contentName = input(": ")
 
 				search_response = apiCalls.searchNotes('title', contentName, ['content'])
 				note_content = translation(search_response.content)
@@ -268,10 +280,18 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("Adding tag...",getConfig(2),"")
 				lineBreak(columns, getConfig(4))
-				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
-				addTagName = input(": ")
+				printColor("What is the name of the note you wish to add a tag to?",getConfig(2),"")
+				addTagName = ""
+				while addTagName == "":
+					printColor("The note to add to cannot be empty. Please input a name.")
+					addTagName = input(": ")
+
 				printColor("What is the tags that you wish to add? (List with commas and a space inbetween)", getConfig(2),"")
 				addTags = input(": ")
+				while addTags != 'none' and not all(tag.strip() for tag in newTags.split(',')):
+   					printColor("Tags should be separated by commas and a space. Please enter tags in the correct format.", getConfig(2))
+   					addTags = input(": ")
+
 				tagsList = addTags.split(", ")
 				apiCalls.addTag(addTagName,tagsList)
 				lineBreak(columns, getConfig(4))
@@ -288,8 +308,14 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
 				delTagName = input(": ")
+				while delTagName == "":
+					printColor("The note to remove a tag from to cannot be empty. Please input a name.")
+					addTagName = input(": ")
 				printColor("What is the tags that you wish to delete? (List with commas and a space inbetween)", getConfig(2),"")
 				delTags = input(": ")
+				while addTags != 'none' and not all(tag.strip() for tag in newTags.split(',')):
+   					printColor("Tags should be separated by commas and a space. Please enter tags in the correct format.", getConfig(2))
+   					delTags = input(": ")
 				delTagsList = delTags.split(", ")
 				apiCalls.deletetag(delTagName,delTagsList)
 				lineBreak(columns, getConfig(4))
@@ -306,6 +332,8 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
 				noteTitle = input(": ")
+				while noteTitle == "":
+					printColor("The note to add an image to cannot be empty. Please input a name.")
 				printColor("What are the paths to the images you would like to attach? (List with commas between)", getConfig(2),"")
 				imagePathInput = input(": ")
 				imagePaths = imagePathInput.split(",")
@@ -341,6 +369,9 @@ def runtime(state):
 				printColor("Enter title that you wish to view content of.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
+				while search_by == "":
+					printColor("The note to search for to cannot be empty. Please input a name.")
+					search_by = input(": ")
 				desired_response = ['title','content']
 				api_response = apiCalls.searchNotes('title', search_by, desired_response)
 				entries = translation(api_response.content)
@@ -359,6 +390,9 @@ def runtime(state):
 				printColor("Enter title to search.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
+				while search_by == "":
+					printColor("The note to search for cannot be empty. Please input a name.")
+					search_by = input(": ")
 				desired_response = ['title','modified_date','created_date']
 				api_response = apiCalls.searchNotes('title', search_by, desired_response)
 				entries = translation(api_response.content)
@@ -381,10 +415,16 @@ def runtime(state):
 				printColor("Enter the beginning of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				start = input(": ")
+				while start == "":
+					printColor("The date range to search by cannot be empty. Please input a date.")
+					start = input(": ")
 				lineBreak(columns, getConfig(4))
 				printColor("Enter the end of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				end = input(": ")
+				while end == "":
+					printColor("The date range to search by cannot be empty. Please input a date.")
+					end = input(": ")
 				desired_response = ['title','modified_date','created_date']
 				api_response = apiCalls.searchNotes('created_date', "", desired_response, start, end)
 				entries = translation(api_response.content)
@@ -407,10 +447,16 @@ def runtime(state):
 				printColor("Enter the beginning of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				start = input(": ")
+				while start == "":
+					printColor("The date range to search by cannot be empty. Please input a date.")
+					start = input(": ")
 				lineBreak(columns, getConfig(4))
 				printColor("Enter the end of the date range to search by.",getConfig(2))
 				lineBreak(columns, getConfig(4))
 				end = input(": ")
+				while end == "":
+					printColor("The date range to search by cannot be empty. Please input a date.")
+					end = input(": ")
 				desired_response = ['title','modified_date','created_date']
 				api_response = apiCalls.searchNotes('modified_date', "", desired_response, start, end)
 				entries = translation(api_response.content)
@@ -433,6 +479,9 @@ def runtime(state):
 				printColor("Enter tag to search.", getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
+				while search_by == "":
+					printColor("The tag to search for cannot be empty. Please input a tag name.")
+					search_by = input(": ")
 				desired_response = ['title', 'tag']
 				api_response = apiCalls.searchNotesByTag(search_by, desired_response)
 				entries = translation(api_response.content)
@@ -561,8 +610,14 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
 				addTagName = input(": ")
+				while addTagName == "":
+					printColor("The note to search for cannot be empty. Please input a note name.")
+					addTagName = input(": ")
 				printColor("What is the tags that you wish to add? (List with commas and a space inbetween)", getConfig(2),"")
 				addTags = input(": ")
+				while addTags != 'none' and not all(tag.strip() for tag in newTags.split(',')):
+   					printColor("Tags should be separated by commas and a space. Please enter tags in the correct format.", getConfig(2))
+   					addTags = input(": ")
 				tagsList = addTags.split(", ")
 				apiCalls.addTag(addTagName,tagsList)
 				lineBreak(columns, getConfig(4))
@@ -578,8 +633,14 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("What is the name of the note you wish to edit?",getConfig(2),"")
 				delTagName = input(": ")
+				while delTagName == "":
+					printColor("The tag to search for cannot be empty. Please input a tag name.")
+					delTagName = input(": ")
 				printColor("What is the tags that you wish to delete? (List with commas and a space inbetween)", getConfig(2),"")
 				delTags = input(": ")
+				while delTags != 'none' and not all(tag.strip() for tag in newTags.split(',')):
+   					printColor("Tags should be separated by commas and a space. Please enter tags in the correct format.", getConfig(2))
+   					delTags = input(": ")
 				delTagsList = delTags.split(", ")
 				print(delTagsList[1])
 				apiCalls.deletetag(delTagName,delTagsList)
@@ -601,6 +662,9 @@ def runtime(state):
 				printColor("Enter tag to search.", getConfig(2))
 				lineBreak(columns, getConfig(4))
 				search_by = input(": ")
+				while search_by == "":
+					printColor("The tag to search by cannot be empty. Please input a tag name.")
+					search_by = input(": ")
 				desired_response = ['title', 'tag']
 				api_response = apiCalls.searchNotesByTag(search_by, desired_response)
 				entries = translation(api_response.content)
@@ -621,8 +685,14 @@ def runtime(state):
 				lineBreak(columns, getConfig(4))
 				printColor("Enter the current tag name:", getConfig(2))
 				old_tag = input(": ")
+				while old_tag == "":
+					printColor("The tag to rename cannot be empty. Please input a tag name.")
+					old_tag = input(": ")
 				printColor("Enter the new tag name:", getConfig(2))
 				new_tag = input(": ")
+				while new_tag == "":
+					printColor("The new name cannot be empty. Please input a tag name.")
+					new_tag = input(": ")
 				apiCalls.renameTag(old_tag, new_tag)
 				lineBreak(columns, getConfig(4))
 				printColor("Tag renamed successfully!", getConfig(2))
@@ -638,6 +708,9 @@ def runtime(state):
 				printColor("What is the title of the note you would like to convert to MKDown?",getConfig(2), "")
 				lineBreak(columns,getConfig(4))
 				search_by = input(": ")
+				while search_by == "":
+					printColor("The note to search for cannot be empty. Please input a note name.")
+					search_by = input(": ")
 				desired_response = ['content']
 				api_response = apiCalls.searchNotes('title', search_by, desired_response)
 				entries = translation(api_response.content)
@@ -670,6 +743,9 @@ def runtime(state):
 					+ " enter" 
 					+ "0" if int(getConfig(6)) == 1 else "1")
 				response = input(": ")
+				while response != 1 and response != 0:
+					printColor("Please enter a number")
+					response = input(": ")
 				setConfig(6)
 				clearConsole()
 				lineBreak(columns, 15)
@@ -687,6 +763,9 @@ def runtime(state):
 				lineBreak(columns, 15)
 				printColor("To select, enter the number pertaining to the color you want.", 15)
 				newColor = input(": ")
+				while int(newColor) not in range(1,256):
+					printColor("Please enter a number")
+					newColor = input(": ")
 				setConfig(2,newColor)
 				clearConsole()
 				lineBreak(columns, getConfig(4))
@@ -704,6 +783,9 @@ def runtime(state):
 				lineBreak(columns, 15)
 				printColor("To select, enter the number pertaining to the color you want.", 15)
 				newColor = input(": ")
+				while int(newColor) not in range(1,256):
+					printColor("Please enter a number")
+					newColor = input(": ")
 				setConfig(4,newColor)
 				clearConsole()
 				lineBreak(columns, getConfig(4))
@@ -724,9 +806,19 @@ def runtime(state):
 			if (state == 0 and userInput == '0'):
 				state = -1
 			else:
-				state = (state * 10) + int(userInput)
+				while True:
+					if userInput.isdigit():
+						userInputFixed = int(userInput)
+						if 0 <= userInputFixed <= 9:
+							state = (state * 10) + userInputFixed
+							break
+						else:
+							printColor("Invalid input. Please enter a number between 0 and 9.", getConfig(2))
+							userInput = input(": ")
+					else:
+						printColor("Invalid input. Please enter a number between 0 and 9.", getConfig(2))
+						userInput = input(": ")
 
-                
          
 # Runtime
 runtime(0)
