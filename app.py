@@ -316,7 +316,7 @@ def search_notes():
             start_query = '1970-01-01'
         
         try: 
-            end_query = payload.get('start')
+            end_query = payload.get('stop')
             if end_query is None: 
                 end_query = datetime.date.today().strftime('%Y-%m-%d')
         except KeyError as error:
@@ -341,7 +341,7 @@ def search_notes():
             start_query = '1970-01-01'
         
         try: 
-            end_query = payload.get('start')
+            end_query = payload.get('stop')
             if end_query is None: 
                 end_query = datetime.date.today().strftime('%Y-%m-%d')
         except KeyError as error:
@@ -349,11 +349,10 @@ def search_notes():
         
         start = datetime.strptime(start_query, '%Y-%m-%d')
         end = datetime.strptime(end_query, '%Y-%m-%d')
-        start = datetime.strptime(query, '%Y-%m-%d')
         # Construct SQL query
         sql_query = f"""
                      SELECT {select_fields_string} FROM notes 
-                     WHERE created_date >= '{start.strftime('%Y-%m-%d')}' AND created_date <= '{end.strftime('%Y-%m-%d')}
+                     WHERE created_date >= '{start.strftime('%Y-%m-%d')}' AND created_date <= '{end.strftime('%Y-%m-%d')}'
                      """
 
     # title
